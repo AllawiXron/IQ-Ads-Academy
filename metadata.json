@@ -1,0 +1,6 @@
+{
+  "name": "IQ Ads Academy - بوابة المروجين",
+  "description": "البوابة الرسمية للمروجين الميدانيين لبرنامج IQ Ads Academy التفاعلي لتعليم إعلانات الإنستغرام والفيسبوك وزيادة المبيعات في العراق.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

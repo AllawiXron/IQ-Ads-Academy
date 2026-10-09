@@ -13,7 +13,9 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.BedBlock;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jspecify.annotations.Nullable;
@@ -26,7 +28,6 @@ import java.util.Optional;
 
 /** Client-side picture of the build in progress: which blocks are done, missing or wrong. */
 public final class BuildView {
-    private static final int REFRESH_TICKS = 5;
 
     /** {@code ground}: natural ground in a layer that sits in the ground (floors, farmland) that has to be dug out. */
     public record CellView(Blueprint.Cell cell, BuildCheck.Status status, AABB box, boolean ground) {}
@@ -41,14 +42,9 @@ public final class BuildView {
     private static Map<Block, Integer> layerNeeds = Map.of();
     private static Map<Block, Integer> totalNeeds = Map.of();
     private static @Nullable CellView target;
-    private static boolean dirty = true;
-    private static int ticks;
+    private static double targetDistance;
 
     private BuildView() {}
-
-    public static void invalidate() {
-        dirty = true;
-    }
 
     public static void tick() {
         Minecraft mc = Minecraft.getInstance();
@@ -56,11 +52,8 @@ public final class BuildView {
             clear();
             return;
         }
-        if (dirty || ++ticks >= REFRESH_TICKS) {
-            ticks = 0;
-            dirty = false;
-            refresh(mc.level);
-        }
+        // re-checked every tick so a placed block disappears from the hologram right away
+        refresh(mc.level);
         target = findTarget(mc.player);
     }
 
@@ -141,6 +134,9 @@ public final class BuildView {
             return null;
         Vec3 eye = player.getEyePosition();
         Vec3 end = eye.add(player.getViewVector(1.0F).scale(8.0));
+        // a real block in the way hides the hologram blocks behind it
+        HitResult wall = player.level().clip(new ClipContext(eye, end, ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, player));
+        double wallDist = wall.getType() == HitResult.Type.MISS ? Double.MAX_VALUE : wall.getLocation().distanceToSqr(eye);
         CellView best = null;
         double bestDist = Double.MAX_VALUE;
         for (CellView v : cells) {
@@ -149,12 +145,13 @@ public final class BuildView {
             Optional<Vec3> hit = new AABB(v.cell.pos()).clip(eye, end);
             if (hit.isPresent()) {
                 double d = hit.get().distanceToSqr(eye);
-                if (d < bestDist) {
+                if (d < bestDist && d <= wallDist + 1.0E-4) {
                     bestDist = d;
                     best = v;
                 }
             }
         }
+        targetDistance = best == null ? Double.MAX_VALUE : Math.sqrt(bestDist);
         return best;
     }
 
@@ -218,5 +215,10 @@ public final class BuildView {
 
     public static @Nullable CellView target() {
         return target;
+    }
+
+    /** Distance from the eyes to where the view ray enters the targeted hologram block. */
+    public static double targetDistance() {
+        return targetDistance;
     }
 }

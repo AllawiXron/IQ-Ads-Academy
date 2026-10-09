@@ -11,6 +11,9 @@ import java.util.Set;
 
 /** Everything the mod remembers about one player. Lives on the server and is saved with the player. */
 public final class PlayerProgress {
+    /** Bumped when step rules change, so old saves can be re-checked. */
+    private static final int DATA_VERSION = 2;
+
     public final Set<String> completed = new LinkedHashSet<>();
     public final Set<String> skipped = new LinkedHashSet<>();
     public final Set<String> completedBuilds = new LinkedHashSet<>();
@@ -44,6 +47,7 @@ public final class PlayerProgress {
 
     public CompoundTag save() {
         CompoundTag tag = new CompoundTag();
+        tag.putInt("version", DATA_VERSION);
         tag.putString("completed", String.join(",", completed));
         tag.putString("skipped", String.join(",", skipped));
         tag.putString("builds", String.join(",", completedBuilds));
@@ -67,6 +71,13 @@ public final class PlayerProgress {
         split(tag.getStringOr("completed", ""), p.completed);
         split(tag.getStringOr("skipped", ""), p.skipped);
         split(tag.getStringOr("builds", ""), p.completedBuilds);
+        if (tag.getIntOr("version", 1) < 2) {
+            // 0.2.0: "Cook a meal" no longer counts food found in chests and "Get iron" now needs 8 ingots,
+            // so check those two again (unless the player skipped them on purpose)
+            for (String changed : new String[]{"cooked_food", "iron"})
+                if (!p.skipped.contains(changed))
+                    p.completed.remove(changed);
+        }
         p.currentStep = tag.getStringOr("current", "");
         p.ticksOnStep = tag.getIntOr("ticksOnStep", 0);
         p.extraTips = tag.getIntOr("extraTips", 0);

@@ -105,7 +105,7 @@ public final class Journey {
                 Goal.build("starter_hut"),
                 "The first night is the most dangerous: zombies, skeletons and creepers come out in the dark.",
                 "Open the journal (J) > Builds > First Night Shelter and press Place. A hologram shows where every block goes.",
-                "Build layer by layer. The tracker tells you which blocks you still need.",
+                "Hold the right block and right-click a see-through block to place it. The tracker shows what you still need.",
                 "Built your own shelter already? Use 'Skip step' in the journal.");
         b.step("sleep", "Sleep in a bed", "Sleep through one night", Items.BED.pick(DyeColor.WHITE),
                 Goal.customStat(Stats.SLEEP_IN_BED, 1),
@@ -120,19 +120,13 @@ public final class Journey {
                 Goal.obtain(1, Items.FURNACE),
                 "Furnaces cook food and smelt ores into ingots.",
                 "Put 8 cobblestone around the edge of the crafting table grid, leaving the middle empty.");
-        b.step("cooked_food", "Cook a meal", "Cook 5 pieces of food", Items.COOKED_BEEF,
-                Goal.obtain(5, Items.COOKED_BEEF, Items.COOKED_PORKCHOP, Items.COOKED_MUTTON, Items.COOKED_CHICKEN,
-                        Items.COOKED_RABBIT, Items.COOKED_COD, Items.COOKED_SALMON, Items.BAKED_POTATO, Items.BREAD),
+        b.step("cooked_food", "Cook a meal", "Cook 5 pieces of food in a furnace", Items.COOKED_BEEF,
+                // only food you actually cooked counts, not cooked food found in chests
+                Goal.crafted(5, Items.COOKED_BEEF, Items.COOKED_PORKCHOP, Items.COOKED_MUTTON, Items.COOKED_CHICKEN,
+                        Items.COOKED_RABBIT, Items.COOKED_COD, Items.COOKED_SALMON, Items.BAKED_POTATO),
                 "Cooked meat fills your hunger bar much more than raw meat.",
                 "Raw food goes in the top slot of the furnace, fuel (coal, charcoal, planks) in the bottom.",
-                "Bread works too: 3 wheat in a row on the crafting table.");
-        b.step("cozy_cabin", "A real home", "Build the Cozy Cabin", Items.SPRUCE_DOOR,
-                Goal.build("cozy_cabin"),
-                "A proper base keeps your stuff safe and gives you a place to come back to.",
-                "Open the journal (J) > Builds > Cozy Cabin and press Place. Look at a spot and press Enter to confirm.",
-                "You'll need glass for the windows: smelt sand in a furnace.",
-                "Place torches inside and around the cabin so no monsters spawn nearby.",
-                "Building your own house instead? That's great; use 'Skip step' when it's done.");
+                "Take the cooked food out of the furnace to count it. A smoker cooks food twice as fast.");
         b.step("storage", "Get organized", "Craft 4 chests", Items.CHEST,
                 Goal.obtain(4, Items.CHEST),
                 "You'll collect a lot of stuff. Chests keep it safe when you die.",
@@ -144,8 +138,8 @@ public final class Journey {
                 "Break tall grass to find seeds. Till dirt with a hoe next to water, then plant the seeds.",
                 "One water block hydrates farmland up to 4 blocks away in every direction.",
                 "Wheat is ready when it's tall and golden brown.");
-        b.step("iron", "Smelt iron", "Smelt iron ingots", Items.IRON_INGOT,
-                Goal.advancement("story/smelt_iron"),
+        b.step("iron", "Get iron", "Collect 8 iron ingots", Items.IRON_INGOT,
+                Goal.obtain(8, Items.IRON_INGOT),
                 "Iron makes far better tools and armor, plus buckets and shields.",
                 "Iron ore is stone with orange-beige spots. It's common in caves and on mountains.",
                 "Mine it with a stone pickaxe or better, then smelt the raw iron in your furnace.");
@@ -164,6 +158,13 @@ public final class Journey {
                 "Full iron armor makes caves and the Nether far less scary.",
                 "The full set takes 24 iron ingots: helmet 5, chestplate 8, leggings 7, boots 4.",
                 "Caves with lots of exposed stone are the fastest place to find iron.");
+        b.step("cozy_cabin", "A real home", "Build the Cozy Cabin", Items.SPRUCE_DOOR,
+                Goal.build("cozy_cabin"),
+                "You've outgrown the little hut. A proper home keeps all your gear safe before you head deep underground.",
+                "Open the journal (J) > Builds > Cozy Cabin and press Place. Look at a spot and press Enter to confirm.",
+                "Hold the right block and right-click a see-through block to place it there, already facing the right way.",
+                "You'll need glass for the windows: smelt sand in a furnace.",
+                "Building your own house instead? That's great; use 'Skip step' when it's done.");
         b.blueprint("cozy_cabin", "cozy_cabin");
         b.blueprint("wheat_farm", "farm");
 

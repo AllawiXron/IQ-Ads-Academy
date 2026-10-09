@@ -12,6 +12,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import org.jspecify.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -37,12 +38,20 @@ public final class ClientState {
     public static void apply(SyncPacket msg) {
         Set<String> newCompleted = new HashSet<>(msg.completed());
         Set<String> newBuilds = new HashSet<>(msg.completedBuilds());
+        String oldCurrent = currentStep;
+        Set<String> oldCompleted = completed;
 
         if (received) {
-            for (Step step : Journey.steps()) {
-                if (newCompleted.contains(step.id()) && !completed.contains(step.id()) && !msg.skipped().contains(step.id()))
-                    onStepCompleted(step, newCompleted);
-            }
+            List<Step> justDone = new ArrayList<>();
+            for (Step step : Journey.steps())
+                if (newCompleted.contains(step.id()) && !oldCompleted.contains(step.id()) && !msg.skipped().contains(step.id()))
+                    justDone.add(step);
+            // a few toasts at most, so finishing many steps at once doesn't flood the screen
+            for (int i = 0; i < Math.min(justDone.size(), 3); i++)
+                onStepCompleted(justDone.get(i), newCompleted, justDone.get(i).id().equals(oldCurrent));
+            if (justDone.size() > 3)
+                StepToast.show("More steps done", "+" + (justDone.size() - 3) + " more, see the journal", justDone.getLast().iconStack());
+
             for (String id : newBuilds) {
                 if (!completedBuilds.contains(id)) {
                     Blueprint bp = Blueprints.get(id);
@@ -50,6 +59,9 @@ public final class ClientState {
                         StepToast.show("Build complete!", bp.name, bp.icon.getDefaultInstance());
                 }
             }
+
+            if (!msg.currentStep().equals(oldCurrent))
+                explainSkippedAhead(oldCurrent, msg.currentStep(), oldCompleted, newCompleted);
         }
 
         received = true;
@@ -64,10 +76,38 @@ public final class ClientState {
         pointerTicks = msg.pointerTicks();
         pointer = msg.pointer();
         build = msg.build();
-        BuildView.invalidate();
     }
 
-    private static void onStepCompleted(Step step, Set<String> nowCompleted) {
+    /**
+     * When the tracker jumps over steps the player finished earlier, say so in chat. Otherwise it looks
+     * like the guide skipped them by mistake.
+     */
+    private static void explainSkippedAhead(String oldCurrent, String newCurrent, Set<String> oldCompleted, Set<String> nowCompleted) {
+        Step from = Journey.get(oldCurrent);
+        Step to = Journey.get(newCurrent);
+        if (from == null)
+            return;
+        int start = Journey.indexOf(from) + 1;
+        int end = to == null ? Journey.steps().size() : Journey.indexOf(to);
+        List<String> alreadyDone = new ArrayList<>();
+        for (int i = start; i < end; i++) {
+            Step s = Journey.steps().get(i);
+            if (oldCompleted.contains(s.id()) && nowCompleted.contains(s.id()))
+                alreadyDone.add(s.title());
+        }
+        Minecraft mc = Minecraft.getInstance();
+        if (alreadyDone.isEmpty() || mc.player == null)
+            return;
+        Component text = Component.literal("[Journey Guide] ").withStyle(ChatFormatting.GOLD)
+                .append(Component.literal("You already did " + String.join(", ", alreadyDone) + " earlier, so "
+                                + (alreadyDone.size() == 1 ? "it's" : "they're") + " ticked off. ")
+                        .withStyle(ChatFormatting.GRAY))
+                .append(Component.literal(to == null ? "That was the last step!" : "Next up: " + to.title())
+                        .withStyle(ChatFormatting.YELLOW));
+        mc.gui.hud.getChat().addClientSystemMessage(text);
+    }
+
+    private static void onStepCompleted(Step step, Set<String> nowCompleted, boolean wasCurrent) {
         boolean chapterDone = true;
         for (Step s : Journey.inChapter(step.chapter()))
             if (!nowCompleted.contains(s.id()))
@@ -83,10 +123,13 @@ public final class ClientState {
             StepToast.show("Chapter complete!", step.chapter().title, step.chapter().icon());
             if (mc.player != null)
                 mc.player.playSound(SoundEvents.UI_TOAST_CHALLENGE_COMPLETE, 0.7F, 1.0F);
-        } else {
+        } else if (wasCurrent) {
             StepToast.show("Step complete!", step.title(), step.iconStack());
             if (mc.player != null)
                 mc.player.playSound(SoundEvents.PLAYER_LEVELUP, 0.5F, 1.4F);
+        } else {
+            // finished a later step before getting there; it's ticked off now and won't be asked again
+            StepToast.show("Done early!", step.title() + " (step " + (Journey.indexOf(step) + 1) + ")", step.iconStack());
         }
     }
 
@@ -99,7 +142,6 @@ public final class ClientState {
         currentStep = "";
         pointer = null;
         build = null;
-        BuildView.invalidate();
     }
 
     public static void tick() {

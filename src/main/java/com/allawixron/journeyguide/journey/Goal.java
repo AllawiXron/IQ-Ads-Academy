@@ -37,6 +37,11 @@ public interface Goal {
         }, count);
     }
 
+    /** Items you made yourself: crafted, or smelted and taken out of a furnace. Items found in chests don't count. */
+    static Goal crafted(int count, Item... items) {
+        return new Crafted(List.of(items), count);
+    }
+
     static Goal advancement(String path) {
         return new Advancement(Identifier.withDefaultNamespace(path));
     }
@@ -99,6 +104,21 @@ public interface Goal {
                 everObtained += player.getStats().getValue(Stats.ITEM_CRAFTED, item);
             }
             return Math.max(inInventory, everObtained);
+        }
+    }
+
+    record Crafted(List<Item> items, int count) implements Goal {
+        @Override
+        public int target() {
+            return count;
+        }
+
+        @Override
+        public int progress(ServerPlayer player, PlayerProgress data) {
+            int made = 0;
+            for (Item item : items)
+                made += player.getStats().getValue(Stats.ITEM_CRAFTED, item);
+            return made;
         }
     }
 

@@ -155,7 +155,7 @@ public final class JournalScreen extends Screen {
         g.text(font, total, px + pw - GAP - font.width(total), py + 8, TrackerHud.GRAY, false);
         TrackerHud.bar(g, px + GAP + font.width("Journey Guide") + 10, py + 10,
                 pw - 2 * GAP - font.width("Journey Guide") - font.width(total) - 20,
-                ClientState.completedCount(), Journey.steps().size());
+                5, ClientState.completedCount(), Journey.steps().size());
 
         drawTabs(g, mouseX, mouseY);
         g.fill(midX - GAP / 2, bodyY, midX - GAP / 2 + 1, bodyY + bodyH, 0x40FFFFFF);
@@ -358,8 +358,8 @@ public final class JournalScreen extends Screen {
             y += 18;
         }
         y += 2;
-        y = wrapped(g, "Tip: the hologram is built layer by layer from the bottom. Only the current layer glows; "
-                + "the next layers show as faint outlines.", rightX, y, rightW, 0xFF808080);
+        y = wrapped(g, "Tip: build from the bottom layer up. Hold the right block and right-click a see-through block "
+                + "to place it there, already facing the right way.", rightX, y, rightW, 0xFF808080);
 
         detailContentH = y - top;
         g.disableScissor();

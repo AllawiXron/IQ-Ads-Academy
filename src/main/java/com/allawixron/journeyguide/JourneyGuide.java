@@ -18,6 +18,7 @@ public final class JourneyGuide {
 
     public JourneyGuide(FMLJavaModLoadingContext context) {
         context.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
+        ModEntities.register(context.getModBusGroup());
         Net.init();
         JourneyServer.init();
 

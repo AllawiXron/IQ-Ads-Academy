@@ -89,8 +89,8 @@ public final class PlacementMode {
             Net.sendToServer(ActionPacket.place(blueprint.id, origin, rotation));
             player.playSound(SoundEvents.PLAYER_LEVELUP, 0.4F, 1.8F);
             player.sendSystemMessage(Component.literal("[Journey Guide] ").withStyle(ChatFormatting.GOLD)
-                    .append(Component.literal("Placed! Build the glowing blocks layer by layer. "
-                            + "The tracker shows what you still need.").withStyle(ChatFormatting.YELLOW)));
+                    .append(Component.literal("Placed! Hold the right block and right-click the see-through blocks "
+                            + "to place them. The tracker shows what you still need.").withStyle(ChatFormatting.YELLOW)));
             cancel();
             return;
         }

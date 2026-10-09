@@ -6,7 +6,7 @@ import net.minecraft.world.level.block.Rotation;
 
 /** Something the player did in the journal or while placing a build. */
 public record ActionPacket(Action action, String text, BlockPos pos, Rotation rotation) {
-    public enum Action { SKIP_STEP, UNSKIP_STEP, MORE_TIPS, PLACE_BUILD, CANCEL_BUILD }
+    public enum Action { SKIP_STEP, UNSKIP_STEP, MORE_TIPS, PLACE_BUILD, CANCEL_BUILD, PLACE_BLOCK }
 
     public static ActionPacket skip(String stepId) {
         return new ActionPacket(Action.SKIP_STEP, stepId, BlockPos.ZERO, Rotation.NONE);
@@ -22,6 +22,11 @@ public record ActionPacket(Action action, String text, BlockPos pos, Rotation ro
 
     public static ActionPacket place(String blueprintId, BlockPos origin, Rotation rotation) {
         return new ActionPacket(Action.PLACE_BUILD, blueprintId, origin, rotation);
+    }
+
+    /** Place the held block into the hologram at {@code pos}; {@code text} is the hand ("main" or "off"). */
+    public static ActionPacket placeBlock(BlockPos pos, boolean offhand) {
+        return new ActionPacket(Action.PLACE_BLOCK, offhand ? "off" : "main", pos, Rotation.NONE);
     }
 
     public static ActionPacket cancelBuild() {

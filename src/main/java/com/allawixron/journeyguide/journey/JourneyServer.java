@@ -2,6 +2,7 @@ package com.allawixron.journeyguide.journey;
 
 import com.allawixron.journeyguide.Config;
 import com.allawixron.journeyguide.build.Blueprint;
+import com.allawixron.journeyguide.build.BlueprintPlacer;
 import com.allawixron.journeyguide.build.Blueprints;
 import com.allawixron.journeyguide.build.BuildCheck;
 import com.allawixron.journeyguide.network.ActionPacket;
@@ -21,6 +22,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.event.RegisterCommandsEvent;
@@ -243,6 +245,16 @@ public final class JourneyServer {
                 p.activeBuild = new PlayerProgress.ActiveBuild(bp.id, msg.pos(), msg.rotation(), player.level().dimension().identifier());
             }
             case CANCEL_BUILD -> p.activeBuild = null;
+            case PLACE_BLOCK -> {
+                PlayerProgress.ActiveBuild build = p.activeBuild;
+                Blueprint bp = build == null ? null : Blueprints.get(build.blueprintId());
+                if (bp == null || !player.level().dimension().identifier().equals(build.dimension()))
+                    return;
+                InteractionHand hand = msg.text().equals("off") ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND;
+                if (BlueprintPlacer.place(player, bp, build.origin(), build.rotation(), msg.pos(), hand))
+                    checkBuild(player, p);
+                return;
+            }
         }
         save(player, p);
         update(player, p);

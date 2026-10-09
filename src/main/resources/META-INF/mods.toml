@@ -1,0 +1,28 @@
+modLoader="javafml"
+loaderVersion="[66,)"
+license="All Rights Reserved"
+
+[[mods]]
+modId="journeyguide"
+version="0.1.0"
+displayName="Journey Guide"
+authors="AllawiXron"
+description='''
+Your guide from the first night to the Ender Dragon.
+A step-by-step journey that ticks itself off as you play, a tracker on screen, a journal with tips (J),
+pointers when you're stuck, and holographic blueprints that show you exactly where every block goes.
+'''
+
+[[dependencies.journeyguide]]
+    modId="forge"
+    mandatory=true
+    versionRange="[66,)"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.journeyguide]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[26.3,26.4)"
+    ordering="NONE"
+    side="BOTH"

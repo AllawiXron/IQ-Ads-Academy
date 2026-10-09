@@ -1,0 +1,10 @@
+{
+  "key.category.journeyguide.main": "Journey Guide",
+  "key.journeyguide.open_journal": "Open journal",
+  "key.journeyguide.toggle_tracker": "Show/hide tracker",
+  "key.journeyguide.rotate_build": "Rotate build (while placing)",
+  "key.journeyguide.raise_build": "Move build up (while placing)",
+  "key.journeyguide.lower_build": "Move build down (while placing)",
+  "key.journeyguide.confirm_build": "Place build (while placing)",
+  "key.journeyguide.cancel_build": "Cancel placing"
+}

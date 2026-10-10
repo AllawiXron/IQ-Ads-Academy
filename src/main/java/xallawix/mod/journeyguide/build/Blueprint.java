@@ -17,156 +17,156 @@ import java.util.Map;
 
 // layers go bottom to top, rows back (north) to front (south), entrance on the south side
 // '.' = has to be empty, ' ' = doesn't matter, anything else = a key
-public final class Blueprint {
-    public final String id;
-    public final String name;
-    public final String description;
-    public final Item icon;
-    public final int sink;
-    public final int width;
-    public final int height;
-    public final int depth;
-    private final @Nullable BlockState[][][] cells;
+public class Blueprint {
+	public final String id;
+	public final String name;
+	public final String description;
+	public final Item icon;
+	public final int sink;
+	public final int width;
+	public final int height;
+	public final int depth;
+	private final @Nullable BlockState[][][] cells;
 
-    private Blueprint(String id, String name, String description, Item icon, int sink, @Nullable BlockState[][][] cells) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.icon = icon;
-        this.sink = sink;
-        this.cells = cells;
-        this.height = cells.length;
-        this.depth = cells[0].length;
-        this.width = cells[0][0].length;
-    }
+	private Blueprint(String id, String name, String description, Item icon, int sink, @Nullable BlockState[][][] cells) {
+		this.id = id;
+		this.name = name;
+		this.description = description;
+		this.icon = icon;
+		this.sink = sink;
+		this.cells = cells;
+		this.height = cells.length;
+		this.depth = cells[0].length;
+		this.width = cells[0][0].length;
+	}
 
-    public record Cell(BlockPos pos, BlockState state, int layer) {
-        public boolean mustBeEmpty() {
-            return state.isAir();
-        }
-    }
+	public record Cell(BlockPos pos, BlockState state, int layer) {
+		public boolean mustBeEmpty() {
+			return state.isAir();
+		}
+	}
 
-    public List<Cell> cells(BlockPos origin, Rotation rotation) {
-        List<Cell> result = new ArrayList<>();
-        for (int y = 0; y < height; y++)
-            for (int z = 0; z < depth; z++)
-                for (int x = 0; x < width; x++) {
-                    BlockState state = cells[y][z][x];
-                    if (state == null)
-                        continue;
-                    BlockPos pos = origin.offset(new BlockPos(x, y, z).rotate(rotation));
-                    result.add(new Cell(pos, state.rotate(rotation), y));
-                }
-        return result;
-    }
+	public List<Cell> cells(BlockPos origin, Rotation rotation) {
+		List<Cell> result = new ArrayList<>();
+		for (int y = 0; y < height; y++)
+			for (int z = 0; z < depth; z++)
+				for (int x = 0; x < width; x++) {
+					BlockState state = cells[y][z][x];
+					if (state == null)
+						continue;
+					BlockPos pos = origin.offset(new BlockPos(x, y, z).rotate(rotation));
+					result.add(new Cell(pos, state.rotate(rotation), y));
+				}
+		return result;
+	}
 
-    public Map<Block, Integer> materials() {
-        Map<Block, Integer> counts = new HashMap<>();
-        for (Cell cell : cells(BlockPos.ZERO, Rotation.NONE))
-            if (!cell.mustBeEmpty())
-                counts.merge(BuildCheck.materialOf(cell.state()), 1, Integer::sum);
-        return sortByCount(counts);
-    }
+	public Map<Block, Integer> materials() {
+		Map<Block, Integer> counts = new HashMap<>();
+		for (Cell cell : cells(BlockPos.ZERO, Rotation.NONE))
+			if (!cell.mustBeEmpty())
+				counts.merge(BuildCheck.materialOf(cell.state()), 1, Integer::sum);
+		return sortByCount(counts);
+	}
 
-    public int blockCount() {
-        int n = 0;
-        for (Cell cell : cells(BlockPos.ZERO, Rotation.NONE))
-            if (!cell.mustBeEmpty() && BuildCheck.materialOf(cell.state()) != Blocks.AIR)
-                n++;
-        return n;
-    }
+	public int blockCount() {
+		int n = 0;
+		for (Cell cell : cells(BlockPos.ZERO, Rotation.NONE))
+			if (!cell.mustBeEmpty() && BuildCheck.materialOf(cell.state()) != Blocks.AIR)
+				n++;
+		return n;
+	}
 
-    public static Map<Block, Integer> sortByCount(Map<Block, Integer> counts) {
-        Map<Block, Integer> sorted = new LinkedHashMap<>();
-        counts.entrySet().stream()
-                .filter(e -> e.getKey() != Blocks.AIR)
-                .sorted((a, b) -> b.getValue() - a.getValue())
-                .forEach(e -> sorted.put(e.getKey(), e.getValue()));
-        return sorted;
-    }
+	public static Map<Block, Integer> sortByCount(Map<Block, Integer> counts) {
+		Map<Block, Integer> sorted = new LinkedHashMap<>();
+		counts.entrySet().stream()
+				.filter(e -> e.getKey() != Blocks.AIR)
+				.sorted((a, b) -> b.getValue() - a.getValue())
+				.forEach(e -> sorted.put(e.getKey(), e.getValue()));
+		return sorted;
+	}
 
-    public static Rotation rotationFor(Direction facing) {
-        return switch (facing) {
-            case EAST -> Rotation.CLOCKWISE_90;
-            case SOUTH -> Rotation.CLOCKWISE_180;
-            case WEST -> Rotation.COUNTERCLOCKWISE_90;
-            default -> Rotation.NONE;
-        };
-    }
+	public static Rotation rotationFor(Direction facing) {
+		return switch (facing) {
+			case EAST -> Rotation.CLOCKWISE_90;
+			case SOUTH -> Rotation.CLOCKWISE_180;
+			case WEST -> Rotation.COUNTERCLOCKWISE_90;
+			default -> Rotation.NONE;
+		};
+	}
 
-    public BlockPos originFor(BlockPos anchor, Rotation rotation) {
-        BlockPos frontCenter = new BlockPos(width / 2, sink, depth - 1).rotate(rotation);
-        return anchor.subtract(frontCenter);
-    }
+	public BlockPos originFor(BlockPos anchor, Rotation rotation) {
+		BlockPos frontCenter = new BlockPos(width / 2, sink, depth - 1).rotate(rotation);
+		return anchor.subtract(frontCenter);
+	}
 
-    public static Builder builder(String id, String name, Item icon) {
-        return new Builder(id, name, icon);
-    }
+	public static Builder builder(String id, String name, Item icon) {
+		return new Builder(id, name, icon);
+	}
 
-    public static final class Builder {
-        private final String id;
-        private final String name;
-        private final Item icon;
-        private String description = "";
-        private int sink;
-        private final Map<Character, BlockState> keys = new HashMap<>();
-        private final List<String[]> layers = new ArrayList<>();
+	public static final class Builder {
+		private final String id;
+		private final String name;
+		private final Item icon;
+		private String description = "";
+		private int sink;
+		private final Map<Character, BlockState> keys = new HashMap<>();
+		private final List<String[]> layers = new ArrayList<>();
 
-        private Builder(String id, String name, Item icon) {
-            this.id = id;
-            this.name = name;
-            this.icon = icon;
-            keys.put('.', Blocks.AIR.defaultBlockState());
-        }
+		private Builder(String id, String name, Item icon) {
+			this.id = id;
+			this.name = name;
+			this.icon = icon;
+			keys.put('.', Blocks.AIR.defaultBlockState());
+		}
 
-        public Builder description(String description) {
-            this.description = description;
-            return this;
-        }
+		public Builder description(String description) {
+			this.description = description;
+			return this;
+		}
 
-        public Builder sink(int sink) {
-            this.sink = sink;
-            return this;
-        }
+		public Builder sink(int sink) {
+			this.sink = sink;
+			return this;
+		}
 
-        public Builder key(char c, Block block) {
-            return key(c, block.defaultBlockState());
-        }
+		public Builder key(char c, Block block) {
+			return key(c, block.defaultBlockState());
+		}
 
-        public Builder key(char c, BlockState state) {
-            keys.put(c, state);
-            return this;
-        }
+		public Builder key(char c, BlockState state) {
+			keys.put(c, state);
+			return this;
+		}
 
-        public Builder layer(String... rows) {
-            layers.add(rows);
-            return this;
-        }
+		public Builder layer(String... rows) {
+			layers.add(rows);
+			return this;
+		}
 
-        public Blueprint build() {
-            int depth = layers.getFirst().length;
-            int width = layers.getFirst()[0].length();
-            @Nullable BlockState[][][] cells = new BlockState[layers.size()][depth][width];
-            for (int y = 0; y < layers.size(); y++) {
-                String[] rows = layers.get(y);
-                if (rows.length != depth)
-                    throw new IllegalStateException(id + ": layer " + y + " has " + rows.length + " rows, expected " + depth);
-                for (int z = 0; z < depth; z++) {
-                    String row = rows[z];
-                    if (row.length() != width)
-                        throw new IllegalStateException(id + ": layer " + y + " row " + z + " is " + row.length() + " wide, expected " + width);
-                    for (int x = 0; x < width; x++) {
-                        char c = row.charAt(x);
-                        if (c == ' ')
-                            continue;
-                        BlockState state = keys.get(c);
-                        if (state == null)
-                            throw new IllegalStateException(id + ": unknown key '" + c + "' in layer " + y);
-                        cells[y][z][x] = state;
-                    }
-                }
-            }
-            return new Blueprint(id, name, description, icon, sink, cells);
-        }
-    }
+		public Blueprint build() {
+			int depth = layers.getFirst().length;
+			int width = layers.getFirst()[0].length();
+			@Nullable BlockState[][][] cells = new BlockState[layers.size()][depth][width];
+			for (int y = 0; y < layers.size(); y++) {
+				String[] rows = layers.get(y);
+				if (rows.length != depth)
+					throw new IllegalStateException(id + ": layer " + y + " has " + rows.length + " rows, expected " + depth);
+				for (int z = 0; z < depth; z++) {
+					String row = rows[z];
+					if (row.length() != width)
+						throw new IllegalStateException(id + ": layer " + y + " row " + z + " is " + row.length() + " wide, expected " + width);
+					for (int x = 0; x < width; x++) {
+						char c = row.charAt(x);
+						if (c == ' ')
+							continue;
+						BlockState state = keys.get(c);
+						if (state == null)
+							throw new IllegalStateException(id + ": unknown key '" + c + "' in layer " + y);
+						cells[y][z][x] = state;
+					}
+				}
+			}
+			return new Blueprint(id, name, description, icon, sink, cells);
+		}
+	}
 }

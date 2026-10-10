@@ -69,7 +69,7 @@ base {
     archivesName = 'journeyguide'
 }
 
-// journeyguide-1.0-forge-26.3-team-test-build.jar
+// journeyguide-1.0-forge-26.3-beta-build.jar
 tasks.named('jar', Jar) {
-    archiveClassifier = 'forge-26.3-team-test-build'
+    archiveClassifier = 'forge-26.3-beta-build'
 }

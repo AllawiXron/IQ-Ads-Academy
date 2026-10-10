@@ -9,7 +9,7 @@ plugins {
     id 'net.minecraftforge.gradle' version '[7.0.17,8)'
 }
 
-version = '1.0-test'
+version = '1.0'
 group = 'xallawix.mod.journeyguide'
 
 // Mojang ships Java 25 to end users in 26.1+, so your mod should target Java 25.
@@ -69,7 +69,7 @@ base {
     archivesName = 'journeyguide'
 }
 
-// journeyguide-1.0-test-forge-26.3.jar
+// journeyguide-1.0-forge-26.3-team-test-build.jar
 tasks.named('jar', Jar) {
-    archiveClassifier = 'forge-26.3'
+    archiveClassifier = 'forge-26.3-team-test-build'
 }

@@ -4,16 +4,10 @@ license="All Rights Reserved"
 
 [[mods]]
 modId="journeyguide"
-version="1.0-test"
-displayName="Journey Guide (Test Build)"
+version="1.0"
+displayName="Journey Guide"
 authors="XAllawiX"
-description='''
-TEST BUILD for XAllawiX's team only. This is a test version, not a public release, so please don't share it.
-
-Your guide from the first night to the Ender Dragon: a journey that ticks itself off as you play,
-a tracker on screen, a journal with tips (J), pointers when you're stuck, and blueprints you build
-by right-clicking see-through blocks.
-'''
+description="A mod that guides you from your first night all the way to killing the ender dragon! It tells you what to do next, gives you tips when you get stuck and shows you how to build cool houses so you never get lost in your minecraft world."
 
 [[dependencies.journeyguide]]
     modId="forge"

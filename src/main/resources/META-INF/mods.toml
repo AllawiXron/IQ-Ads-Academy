@@ -4,9 +4,10 @@ license="All Rights Reserved"
 
 [[mods]]
 modId="journeyguide"
-version="0.2.0"
+version="1.0-beta"
 displayName="Journey Guide"
-authors="AllawiXron"
+authors="XAllawiX"
+displayURL="https://www.planetminecraft.com/member/xallawix/"
 description='''
 Your guide from the first night to the Ender Dragon.
 A step-by-step journey that ticks itself off as you play, a tracker on screen, a journal with tips (J),

@@ -1,4 +1,4 @@
-# Journey Guide
+# Journey Guide (Beta)
 
 A Minecraft **Forge 26.3** mod that guides you from your first night all the way to killing the Ender Dragon,
 so you always know what your next step is.
@@ -31,7 +31,7 @@ so you always know what your next step is.
 ## Install
 
 1. Install **Minecraft Forge 26.3** (build 66.0.10 or newer).
-2. Put `journeyguide-26.3-0.2.0.jar` in your `.minecraft/mods` folder.
+2. Put `journeyguide-1.0-beta-forge-26.3.jar` in your `.minecraft/mods` folder.
 3. Start the game with the Forge 26.3 profile.
 
 ## Controls

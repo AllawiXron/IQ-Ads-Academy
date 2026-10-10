@@ -1,0 +1,52 @@
+Journey Guide [Forge 26.3] (Beta)
+
+ever played minecraft for hours and still never killed the ender dragon? or never built a house that wasn't just a dirt box? same lol, that's why i made journey guide.
+
+journey guide is a mod that guides you from your first night all the way to killing the ender dragon! it tells you what to do next, gives you tips when you get stuck and shows you how to build cool houses so you never get lost in your minecraft world.
+
+FEATURES
+
+- 35 steps in 6 chapters: The First Day, Settling In, Going Deeper, The Nether, Eyes of Ender and The End
+- steps tick off by themselves when you do them. if you already did something early (like finding food before building a shelter) it just counts it, no need to do it again
+- a small tracker in the corner shows your current step. press H to make it bigger or hide it
+- press J to open the journal: every step, why you need it and tips on how to do it
+- stuck on a step for a while? extra tips unlock by themselves
+- looking for a nether fortress or the stronghold for too long? you get an arrow pointing the way
+- build blueprints: First Night Shelter, Cozy Cabin, Wheat Farm, Animal Pen, Enchanting Room and a Nether Portal. you see the build as see-through blocks right in your world, layer by layer, and you just right-click a see-through block with the right block in your hand to place it. stairs, doors and beds even face the right way
+- you can skip any step if you don't want to do it
+
+CONTROLS
+
+J - open the journal
+H - tracker small / big / hidden
+right-click a see-through block - place the block you're holding there
+while placing a build: R rotates it, up/down arrows move it, Enter places it, Backspace cancels
+(you can change the keys in Options > Controls > Key Binds)
+
+COMMANDS
+
+/journey - shows your current step
+/journey skip - skips the step you're on
+/journey complete <step> - marks a step as done
+/journey reset - starts over
+/journey buildnow - finishes your build instantly (needs cheats)
+
+HOW TO INSTALL
+
+1. install forge 26.3 (66.0.10 or newer)
+2. put the jar in your .minecraft/mods folder
+3. start the game with forge
+for servers, put the mod on the server and on every player's game
+
+CONFIG
+
+journeyguide-client.toml - trackerMode (COMPACT, DETAILED or HIDDEN) and trackerCorner (TOP_LEFT or TOP_RIGHT)
+journeyguide-common.toml - extraTipMinutes, pointerMinutes and pointerSearchChunks
+
+THIS IS A BETA
+
+there might be some bugs. if you find one or have an idea for the mod, leave a comment and i'll check it out!
+
+the thumbnail was also made with the help of ai (rendered in blender)
+
+i claim that this mod was made by ai

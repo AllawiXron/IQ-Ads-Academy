@@ -1,21 +1,47 @@
 Journey Guide [Forge 26.3] (Beta)
 
+(lines like  [IMAGE: 00_header.png]  show where each picture from the description-images folder goes.
+put the picture there and delete the line)
+
+[IMAGE: 00_header.png]
+
 ever played minecraft for hours and still never killed the ender dragon? or never built a house that wasn't just a dirt box? same lol, that's why i made journey guide.
 
 journey guide is a mod that guides you from your first night all the way to killing the ender dragon! it tells you what to do next, gives you tips when you get stuck and shows you how to build cool houses so you never get lost in your minecraft world.
 
-FEATURES
+[IMAGE: 01_features.png]
+
+[IMAGE: 02_chapters.png]
 
 - 35 steps in 6 chapters: The First Day, Settling In, Going Deeper, The Nether, Eyes of Ender and The End
+
+[IMAGE: 16_progress.png]
+
 - steps tick off by themselves when you do them. if you already did something early (like finding food before building a shelter) it just counts it, no need to do it again
+
+[IMAGE: 10_tracker.png]
+
 - a small tracker in the corner shows your current step. press H to make it bigger or hide it
+
+[IMAGE: 11_journal.png]
+
 - press J to open the journal: every step, why you need it and tips on how to do it
+
+[IMAGE: 15_stuck.png]
+
 - stuck on a step for a while? extra tips unlock by themselves
 - looking for a nether fortress or the stronghold for too long? you get an arrow pointing the way
+
+[IMAGE: 12_blueprints.png]
+
+[IMAGE: 13_builds.png]
+
+[IMAGE: 14_placing.png]
+
 - build blueprints: First Night Shelter, Cozy Cabin, Wheat Farm, Animal Pen, Enchanting Room and a Nether Portal. you see the build as see-through blocks right in your world, layer by layer, and you just right-click a see-through block with the right block in your hand to place it. stairs, doors and beds even face the right way
 - you can skip any step if you don't want to do it
 
-CONTROLS
+[IMAGE: 20_controls.png]
 
 J - open the journal
 H - tracker small / big / hidden
@@ -23,7 +49,7 @@ right-click a see-through block - place the block you're holding there
 while placing a build: R rotates it, up/down arrows move it, Enter places it, Backspace cancels
 (you can change the keys in Options > Controls > Key Binds)
 
-COMMANDS
+[IMAGE: 21_commands.png]
 
 /journey - shows your current step
 /journey skip - skips the step you're on
@@ -31,7 +57,7 @@ COMMANDS
 /journey reset - starts over
 /journey buildnow - finishes your build instantly (needs cheats)
 
-HOW TO INSTALL
+[IMAGE: 22_install.png]
 
 1. install forge 26.3 (66.0.10 or newer)
 2. put the jar in your .minecraft/mods folder
@@ -47,6 +73,6 @@ THIS IS A BETA
 
 there might be some bugs. if you find one or have an idea for the mod, leave a comment and i'll check it out!
 
-the thumbnail was also made with the help of ai (rendered in blender)
+the thumbnail and the pictures in this description were also made with the help of ai
 
 i claim that this mod was made by ai

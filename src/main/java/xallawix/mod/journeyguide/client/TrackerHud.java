@@ -22,10 +22,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-/**
- * The tracker in the corner of the screen. Compact by default (one small box); H switches to a detailed
- * box with tips, or hides it.
- */
 public final class TrackerHud {
     private static final int COMPACT_W = 168;
     private static final int DETAILED_W = 196;
@@ -58,7 +54,6 @@ public final class TrackerHud {
 
         ClientConfig.TrackerMode mode = ClientConfig.mode();
         Font font = mc.font;
-        // placing a build always shows its keys, even with the tracker hidden
         if (PlacementMode.active())
             drawPlacement(g, font);
         else if (mode == ClientConfig.TrackerMode.HIDDEN)
@@ -70,8 +65,6 @@ public final class TrackerHud {
         else
             drawStepCompact(g, font, player);
     }
-
-    // ------------------------------------------------------------------ journey step
 
     private static void drawStepCompact(GuiGraphicsExtractor g, Font font, LocalPlayer player) {
         Step step = ClientState.currentStep();
@@ -119,7 +112,6 @@ public final class TrackerHud {
         }
     }
 
-    /** The newest tip, shown for a little while after a step starts or a new tip unlocks. */
     private static List<FormattedCharSequence> freshTip(Step step, Font font, int width) {
         int visible = ClientState.visibleTips(step);
         String key = step.id() + ":" + visible;
@@ -197,7 +189,6 @@ public final class TrackerHud {
         g.text(font, "Press J to look back", x + PAD, 4 + PAD + 10, GRAY, false);
     }
 
-    /** Pointer, best height or "unlocks in" line for the current step. */
     private static String extraLine(Step step, LocalPlayer player, boolean detailed) {
         SyncPacket.Pointer pointer = ClientState.pointer();
         if (pointer != null) {
@@ -226,7 +217,6 @@ public final class TrackerHud {
         };
     }
 
-    /** An arrow showing which way to turn to face the target. */
     static String arrow(LocalPlayer player, double dx, double dz) {
         double targetYaw = Math.toDegrees(Math.atan2(-dx, dz));
         double diff = Mth.wrapDegrees(targetYaw - player.getYRot());
@@ -234,8 +224,6 @@ public final class TrackerHud {
         int sector = Math.floorMod((int) Math.round(diff / 45.0), 8);
         return arrows[sector];
     }
-
-    // ------------------------------------------------------------------ building
 
     private static void drawPlacement(GuiGraphicsExtractor g, Font font) {
         Blueprint bp = PlacementMode.blueprint();
@@ -264,7 +252,6 @@ public final class TrackerHud {
         int targetColor = target == null ? AQUA : targetColor(player, target);
         String problems = problemsLine();
 
-        // materials for this layer as a row of icons with "have/need" next to each
         Map<Block, Integer> needs = BuildView.layerNeeds();
         int materialRows = needs.isEmpty() ? 0 : 1;
         int cursor = 0;
@@ -333,7 +320,6 @@ public final class TrackerHud {
         return BuildView.carried(player, block) >= need ? GREEN : RED;
     }
 
-    /** What happens if you right-click the see-through block you're looking at. */
     private static String targetLine(LocalPlayer player, BuildView.CellView target) {
         Block block = target.cell().state().getBlock();
         String name = block.getName().getString();
@@ -371,8 +357,6 @@ public final class TrackerHud {
             return ground + " ground block" + (ground > 1 ? "s" : "") + " to dig out (orange)";
         return null;
     }
-
-    // ------------------------------------------------------------------ helpers
 
     private static int left(int width) {
         if (ClientConfig.corner() == ClientConfig.Corner.TOP_RIGHT)

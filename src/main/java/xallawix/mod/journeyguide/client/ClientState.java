@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-/** What the client knows about the player's journey, as last sent by the server. */
 public final class ClientState {
     private static boolean received;
     private static Set<String> completed = Set.of();
@@ -46,7 +45,6 @@ public final class ClientState {
             for (Step step : Journey.steps())
                 if (newCompleted.contains(step.id()) && !oldCompleted.contains(step.id()) && !msg.skipped().contains(step.id()))
                     justDone.add(step);
-            // a few toasts at most, so finishing many steps at once doesn't flood the screen
             for (int i = 0; i < Math.min(justDone.size(), 3); i++)
                 onStepCompleted(justDone.get(i), newCompleted, justDone.get(i).id().equals(oldCurrent));
             if (justDone.size() > 3)
@@ -78,10 +76,6 @@ public final class ClientState {
         build = msg.build();
     }
 
-    /**
-     * When the tracker jumps over steps the player finished earlier, say so in chat. Otherwise it looks
-     * like the guide skipped them by mistake.
-     */
     private static void explainSkippedAhead(String oldCurrent, String newCurrent, Set<String> oldCompleted, Set<String> nowCompleted) {
         Step from = Journey.get(oldCurrent);
         Step to = Journey.get(newCurrent);
@@ -128,7 +122,6 @@ public final class ClientState {
             if (mc.player != null)
                 mc.player.playSound(SoundEvents.PLAYER_LEVELUP, 0.5F, 1.4F);
         } else {
-            // finished a later step before getting there; it's ticked off now and won't be asked again
             StepToast.show("Done early!", step.title() + " (step " + (Journey.indexOf(step) + 1) + ")", step.iconStack());
         }
     }
@@ -148,8 +141,6 @@ public final class ClientState {
         if (received)
             ticksOnStep++;
     }
-
-    // ------------------------------------------------------------------ queries
 
     public static boolean received() {
         return received;
@@ -193,7 +184,6 @@ public final class ClientState {
         return n;
     }
 
-    /** How many tips of this step the player can read. */
     public static int visibleTips(Step step) {
         List<String> tips = step.tips();
         if (!step.id().equals(currentStep))
@@ -202,14 +192,12 @@ public final class ClientState {
         return Math.min(unlocked, tips.size());
     }
 
-    /** Ticks until the next tip unlocks by itself, or -1 if all are visible. */
     public static int ticksUntilNextTip(Step step) {
         if (!step.id().equals(currentStep) || visibleTips(step) >= step.tips().size())
             return -1;
         return extraTipTicks - ticksOnStep % extraTipTicks;
     }
 
-    /** Ticks until the pointer unlocks for the current step, 0 if unlocked, -1 if this step has none. */
     public static int ticksUntilPointer(Step step) {
         if (step.locate() == null || !step.id().equals(currentStep))
             return -1;

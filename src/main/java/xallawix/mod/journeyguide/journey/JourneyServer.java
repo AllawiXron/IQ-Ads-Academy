@@ -36,7 +36,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-/** Server side of the journey: tracks every player's progress, checks builds and syncs to the client. */
 public final class JourneyServer {
     private static final String DATA_KEY = "journeyguide";
     private static final int CHECK_INTERVAL = 20;
@@ -76,8 +75,6 @@ public final class JourneyServer {
         RegisterCommandsEvent.BUS.addListener(JourneyServer::registerCommands);
     }
 
-    // ------------------------------------------------------------------ storage
-
     public static PlayerProgress get(ServerPlayer player) {
         return CACHE.computeIfAbsent(player.getUUID(), uuid -> {
             CompoundTag persisted = player.getPersistentData().getCompoundOrEmpty(ServerPlayer.PERSISTED_NBT_TAG);
@@ -91,8 +88,6 @@ public final class JourneyServer {
         persisted.put(DATA_KEY, p.save());
         root.put(ServerPlayer.PERSISTED_NBT_TAG, persisted);
     }
-
-    // ------------------------------------------------------------------ ticking
 
     private static void onPlayerTick(TickEvent.PlayerTickEvent.Post event) {
         if (!(event.player() instanceof ServerPlayer player))
@@ -110,7 +105,6 @@ public final class JourneyServer {
         update(player, p);
     }
 
-    /** Re-checks all goals, unlocks hints and syncs to the client if anything changed. */
     public static void update(ServerPlayer player, PlayerProgress p) {
         Map<String, Integer> progress = new HashMap<>();
         boolean changed = false;
@@ -224,8 +218,6 @@ public final class JourneyServer {
                 pointer, build);
     }
 
-    // ------------------------------------------------------------------ actions from the client
-
     public static void handleAction(ServerPlayer player, ActionPacket msg) {
         PlayerProgress p = get(player);
         switch (msg.action()) {
@@ -259,8 +251,6 @@ public final class JourneyServer {
         save(player, p);
         update(player, p);
     }
-
-    // ------------------------------------------------------------------ commands
 
     private static void registerCommands(RegisterCommandsEvent event) {
         event.getDispatcher().register(Commands.literal("journey")
@@ -318,7 +308,6 @@ public final class JourneyServer {
         return 1;
     }
 
-    /** Creative helper: finishes the current build instantly (needs cheats). */
     private static int cmdBuildNow(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
         ServerPlayer player = ctx.getSource().getPlayerOrException();
         PlayerProgress p = get(player);
@@ -331,11 +320,9 @@ public final class JourneyServer {
         List<Blueprint.Cell> cells = bp.cells(p.activeBuild.origin(), p.activeBuild.rotation());
         for (Blueprint.Cell cell : cells)
             level.setBlock(cell.pos(), cell.state(), Block.UPDATE_CLIENTS);
-        // second pass so fences, panes and stairs connect to their neighbours
         for (Blueprint.Cell cell : cells) {
             if (cell.mustBeEmpty())
                 continue;
-            // keep blocks that would pop off (like a torch over a dip in the ground) instead of losing them
             BlockState connected = Block.updateFromNeighbourShapes(cell.state(), level, cell.pos());
             if (!connected.isAir())
                 level.setBlock(cell.pos(), connected, Block.UPDATE_CLIENTS);

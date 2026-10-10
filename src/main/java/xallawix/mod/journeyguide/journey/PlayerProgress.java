@@ -9,25 +9,20 @@ import org.jspecify.annotations.Nullable;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-/** Everything the mod remembers about one player. Lives on the server and is saved with the player. */
 public final class PlayerProgress {
-    /** Bumped when step rules change, so old saves can be re-checked. */
     private static final int DATA_VERSION = 2;
 
     public final Set<String> completed = new LinkedHashSet<>();
     public final Set<String> skipped = new LinkedHashSet<>();
     public final Set<String> completedBuilds = new LinkedHashSet<>();
 
-    /** The step the player is currently on, used to reset the "stuck" timer when it changes. */
     public String currentStep = "";
     public int ticksOnStep;
-    /** Extra tips the player has unlocked for the current step (beyond the first one). */
     public int extraTips;
     public boolean welcomed;
 
     public @Nullable ActiveBuild activeBuild;
 
-    // Runtime only, not saved.
     public @Nullable Pointer pointer;
     public boolean pointerSearched;
     public int lastSyncHash;
@@ -71,9 +66,8 @@ public final class PlayerProgress {
         split(tag.getStringOr("completed", ""), p.completed);
         split(tag.getStringOr("skipped", ""), p.skipped);
         split(tag.getStringOr("builds", ""), p.completedBuilds);
+        // cooked_food and iron changed in 0.2.0, check them again
         if (tag.getIntOr("version", 1) < 2) {
-            // 0.2.0: "Cook a meal" no longer counts food found in chests and "Get iron" now needs 8 ingots,
-            // so check those two again (unless the player skipped them on purpose)
             for (String changed : new String[]{"cooked_food", "iron"})
                 if (!p.skipped.contains(changed))
                     p.completed.remove(changed);

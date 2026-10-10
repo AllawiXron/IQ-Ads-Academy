@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-/** The player's whole journey state, sent from the server whenever something changes. */
 public record SyncPacket(
         List<String> completed,
         List<String> skipped,
@@ -30,7 +29,6 @@ public record SyncPacket(
 
     public record Build(String blueprintId, BlockPos origin, Rotation rotation, Identifier dimension) {}
 
-    /** Hash of everything except the ticking timer, to know when a new sync is worth sending. */
     public int contentHash() {
         return Objects.hash(completed, skipped, completedBuilds, progress, currentStep, extraTips, pointer, build);
     }

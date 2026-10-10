@@ -14,16 +14,11 @@ import net.minecraft.world.item.ItemStack;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Something the player has to achieve to finish a step. Goals are evaluated on the server
- * and report a number between 0 and {@link #target()} so the tracker can show a progress bar.
- */
 public interface Goal {
     int target();
 
     int progress(ServerPlayer player, PlayerProgress data);
 
-    /** Collect items. Counts what is in the inventory, or everything ever picked up and crafted, whichever is higher. */
     static Goal obtain(int count, Item... items) {
         return new Obtain(() -> List.of(items), count);
     }
@@ -37,7 +32,6 @@ public interface Goal {
         }, count);
     }
 
-    /** Items you made yourself: crafted, or smelted and taken out of a furnace. Items found in chests don't count. */
     static Goal crafted(int count, Item... items) {
         return new Crafted(List.of(items), count);
     }
@@ -179,7 +173,6 @@ public interface Goal {
         }
     }
 
-    /** Finished as soon as any of the goals is finished. Progress shows the closest one. */
     record AnyOf(List<Goal> goals) implements Goal {
         @Override
         public int target() {

@@ -15,29 +15,17 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * A build the player can place as a hologram and then build block by block.
- * <p>
- * Layers are drawn from above: each string is one row from back (north) to front (south),
- * each character is one block from left (west) to right (east). The entrance faces south,
- * so when placed, the build is turned so the entrance faces the player.
- * <ul>
- *   <li>a key character = that block goes here</li>
- *   <li>{@code .} = must be empty (inside of the build)</li>
- *   <li>space = doesn't matter</li>
- * </ul>
- */
+// layers go bottom to top, rows back (north) to front (south), entrance on the south side
+// '.' = has to be empty, ' ' = doesn't matter, anything else = a key
 public final class Blueprint {
     public final String id;
     public final String name;
     public final String description;
     public final Item icon;
-    /** How many layers sit below the ground (for floors and farms dug into the ground). */
     public final int sink;
     public final int width;
     public final int height;
     public final int depth;
-    /** [y][z][x]; null = don't care. */
     private final @Nullable BlockState[][][] cells;
 
     private Blueprint(String id, String name, String description, Item icon, int sink, @Nullable BlockState[][][] cells) {
@@ -58,7 +46,6 @@ public final class Blueprint {
         }
     }
 
-    /** All cells placed in the world at the given origin and rotation, bottom layer first. */
     public List<Cell> cells(BlockPos origin, Rotation rotation) {
         List<Cell> result = new ArrayList<>();
         for (int y = 0; y < height; y++)
@@ -73,7 +60,6 @@ public final class Blueprint {
         return result;
     }
 
-    /** Blocks needed for the whole build, most needed first. */
     public Map<Block, Integer> materials() {
         Map<Block, Integer> counts = new HashMap<>();
         for (Cell cell : cells(BlockPos.ZERO, Rotation.NONE))
@@ -99,7 +85,6 @@ public final class Blueprint {
         return sorted;
     }
 
-    /** Turns the build so its entrance faces back toward a player looking in {@code facing}. */
     public static Rotation rotationFor(Direction facing) {
         return switch (facing) {
             case EAST -> Rotation.CLOCKWISE_90;
@@ -109,16 +94,10 @@ public final class Blueprint {
         };
     }
 
-    /**
-     * Where to put the build's origin so that the middle of its entrance row sits on {@code anchor},
-     * where anchor is the first empty block on top of the ground.
-     */
     public BlockPos originFor(BlockPos anchor, Rotation rotation) {
         BlockPos frontCenter = new BlockPos(width / 2, sink, depth - 1).rotate(rotation);
         return anchor.subtract(frontCenter);
     }
-
-    // ------------------------------------------------------------------ builder
 
     public static Builder builder(String id, String name, Item icon) {
         return new Builder(id, name, icon);

@@ -24,10 +24,8 @@ import net.minecraft.util.Util;
 import java.util.ArrayList;
 import java.util.List;
 
-/** Draws the hologram blocks as the real block textures, see-through. */
 public final class HologramRenderer extends EntityRenderer<HologramAnchor, HologramRenderer.State> {
     private static final RenderType GHOST = RenderTypes.entityTranslucent(TextureAtlas.LOCATION_BLOCKS, false);
-    /** Shrinks each ghost a little so it never flickers against the real blocks next to it. */
     private static final float INSET = 0.985F;
 
     public static final class State extends EntityRenderState {
@@ -71,7 +69,6 @@ public final class HologramRenderer extends EntityRenderer<HologramAnchor, Holog
             int a = Math.round(alpha * 255);
 
             poseStack.pushPose();
-            // the pose is centred on the anchor (next to the player); move to the ghost's block
             poseStack.translate(ghost.pos().getX() - state.x, ghost.pos().getY() - state.y, ghost.pos().getZ() - state.z);
             poseStack.translate(0.5F, 0.5F, 0.5F);
             poseStack.scale(INSET, INSET, INSET);
@@ -90,7 +87,6 @@ public final class HologramRenderer extends EntityRenderer<HologramAnchor, Holog
 
     private static void emit(VertexConsumer buffer, PoseStack.Pose pose, QuadInstance instance, List<BakedQuad> quads, int alpha) {
         for (BakedQuad quad : quads) {
-            // simple sun-from-above shading so the shape still reads without real lighting
             float shade = switch (quad.direction()) {
                 case UP -> 1.0F;
                 case DOWN -> 0.55F;

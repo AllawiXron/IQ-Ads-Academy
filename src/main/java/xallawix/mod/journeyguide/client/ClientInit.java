@@ -31,7 +31,7 @@ public final class ClientInit {
                 event.registerEntityRenderer(ModEntities.HOLOGRAM_ANCHOR.get(), HologramRenderer::new));
         AddGuiOverlayLayersEvent.BUS.addListener(event ->
                 event.getLayeredDraw().add(ForgeLayeredDraw.PRE_SLEEP_STACK, JourneyGuide.id("tracker"), TrackerHud::extract));
-        // returning true cancels the normal right click
+        // true = cancel the vanilla right click
         InputEvent.InteractionKeyMappingTriggered.UseItem.BUS.addListener(
                 (Predicate<InputEvent.InteractionKeyMappingTriggered.UseItem>) event -> EasyPlace.onUse(event.getHand()));
         TickEvent.ClientTickEvent.Post.BUS.addListener(event -> onClientTick());
@@ -66,7 +66,6 @@ public final class ClientInit {
         if (PlacementMode.active()) {
             PlacementMode.tick();
         } else {
-            // don't let presses pile up while not placing
             KeyBindings.ROTATE_BUILD.consumeClick();
             KeyBindings.RAISE_BUILD.consumeClick();
             KeyBindings.LOWER_BUILD.consumeClick();

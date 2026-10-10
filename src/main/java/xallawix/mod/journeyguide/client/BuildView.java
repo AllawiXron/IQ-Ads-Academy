@@ -26,10 +26,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-/** Client-side picture of the build in progress: which blocks are done, missing or wrong. */
 public final class BuildView {
 
-    /** {@code ground}: natural ground in a layer that sits in the ground (floors, farmland) that has to be dug out. */
     public record CellView(Blueprint.Cell cell, BuildCheck.Status status, AABB box, boolean ground) {}
 
     private static @Nullable Blueprint blueprint;
@@ -52,7 +50,6 @@ public final class BuildView {
             clear();
             return;
         }
-        // re-checked every tick so a placed block disappears from the hologram right away
         refresh(mc.level);
         target = findTarget(mc.player);
     }
@@ -128,13 +125,12 @@ public final class BuildView {
         return shape.bounds().move(cell.pos());
     }
 
-    /** The unfinished hologram block in the current layer that the player is looking at. */
     private static @Nullable CellView findTarget(LocalPlayer player) {
         if (cells.isEmpty())
             return null;
         Vec3 eye = player.getEyePosition();
         Vec3 end = eye.add(player.getViewVector(1.0F).scale(8.0));
-        // a real block in the way hides the hologram blocks behind it
+        // real blocks in the way hide the holo blocks behind them
         HitResult wall = player.level().clip(new ClipContext(eye, end, ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, player));
         double wallDist = wall.getType() == HitResult.Type.MISS ? Double.MAX_VALUE : wall.getLocation().distanceToSqr(eye);
         CellView best = null;
@@ -155,7 +151,6 @@ public final class BuildView {
         return best;
     }
 
-    /** How many of this block's item the player is carrying (any bed counts for a bed). */
     public static int carried(LocalPlayer player, Block block) {
         Item wanted = BuildCheck.itemFor(block);
         boolean anyBed = block instanceof BedBlock;
@@ -170,8 +165,6 @@ public final class BuildView {
         }
         return count;
     }
-
-    // ------------------------------------------------------------------ getters
 
     public static boolean active() {
         return blueprint != null;
@@ -217,7 +210,6 @@ public final class BuildView {
         return target;
     }
 
-    /** Distance from the eyes to where the view ray enters the targeted hologram block. */
     public static double targetDistance() {
         return targetDistance;
     }

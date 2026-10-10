@@ -9,12 +9,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 
-/**
- * An invisible entity that only ever exists on the client. Its renderer draws the hologram blocks, because
- * entity renderers are the place where the game lets mods draw textured, see-through geometry every frame.
- * It follows the player around so it is always in a visible chunk section. It never saves and the server
- * never spawns it.
- */
+// client only, never saved. its renderer draws the hologram blocks
 public final class HologramAnchor extends Entity {
     public HologramAnchor(EntityType<? extends HologramAnchor> type, Level level) {
         super(type, level);
@@ -27,7 +22,6 @@ public final class HologramAnchor extends Entity {
 
     @Override
     public void tick() {
-        // nothing to do: the client moves it next to the player every tick
     }
 
     @Override

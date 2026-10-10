@@ -18,7 +18,6 @@ import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 
-/** Choosing where a build goes: the hologram follows where you look until you confirm it. */
 public final class PlacementMode {
     private static @Nullable Blueprint blueprint;
     private static Rotation extraRotation = Rotation.NONE;
@@ -100,7 +99,6 @@ public final class PlacementMode {
         }
     }
 
-    /** Keeps the build at least two blocks in front of the player so it never lands on top of them. */
     private static BlockPos inFront(LocalPlayer player, BlockPos anchor) {
         Direction facing = player.getDirection();
         BlockPos feet = player.blockPosition();
@@ -108,7 +106,6 @@ public final class PlacementMode {
         return ahead < 2 ? anchor.relative(facing, 2 - ahead) : anchor;
     }
 
-    /** The first empty block on top of what the player is looking at. */
     private static BlockPos anchor(LocalPlayer player) {
         HitResult hit = player.pick(32.0, 1.0F, false);
         if (hit instanceof BlockHitResult blockHit && hit.getType() == HitResult.Type.BLOCK) {

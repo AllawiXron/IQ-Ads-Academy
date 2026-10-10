@@ -2,7 +2,6 @@ package xallawix.mod.journeyguide.client;
 
 import net.minecraftforge.common.ForgeConfigSpec;
 
-/** Settings that only matter on your own screen. Saved in config/journeyguide-client.toml. */
 public final class ClientConfig {
     public enum TrackerMode {
         COMPACT, DETAILED, HIDDEN;
@@ -51,7 +50,6 @@ public final class ClientConfig {
             TRACKER_MODE.set(next);
             TRACKER_MODE.save();
         } catch (IllegalStateException notLoadedYet) {
-            // can't save before the config is loaded; nothing to do
         }
         return next;
     }

@@ -19,7 +19,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-/** The full journey from the first tree to the Ender Dragon. */
 public final class Journey {
     public static final TagKey<Structure> FORTRESS = TagKey.create(Registries.STRUCTURE, JourneyGuide.id("fortress"));
 
@@ -58,7 +57,6 @@ public final class Journey {
         List<Step> list = new ArrayList<>();
         var b = new Builder(list);
 
-        // ---------------------------------------------------------------- The First Day
         b.chapter(Chapter.FIRST_DAY);
         b.step("punch_tree", "Punch a tree", "Collect 6 logs", Items.OAK_LOG,
                 Goal.obtain(6, ItemTags.LOGS),
@@ -114,14 +112,12 @@ public final class Journey {
                 "You can only sleep at night or during a thunderstorm, and no monsters can be close by.");
         b.blueprint("starter_hut", "first_shelter");
 
-        // ---------------------------------------------------------------- Settling In
         b.chapter(Chapter.SETTLING_IN);
         b.step("furnace", "Build a furnace", "Craft a furnace", Items.FURNACE,
                 Goal.obtain(1, Items.FURNACE),
                 "Furnaces cook food and smelt ores into ingots.",
                 "Put 8 cobblestone around the edge of the crafting table grid, leaving the middle empty.");
         b.step("cooked_food", "Cook a meal", "Cook 5 pieces of food in a furnace", Items.COOKED_BEEF,
-                // only food you actually cooked counts, not cooked food found in chests
                 Goal.crafted(5, Items.COOKED_BEEF, Items.COOKED_PORKCHOP, Items.COOKED_MUTTON, Items.COOKED_CHICKEN,
                         Items.COOKED_RABBIT, Items.COOKED_COD, Items.COOKED_SALMON, Items.BAKED_POTATO),
                 "Cooked meat fills your hunger bar much more than raw meat.",
@@ -168,7 +164,6 @@ public final class Journey {
         b.blueprint("cozy_cabin", "cozy_cabin");
         b.blueprint("wheat_farm", "farm");
 
-        // ---------------------------------------------------------------- Going Deeper
         b.chapter(Chapter.GOING_DEEPER);
         b.step("diamonds", "Find diamonds", "Mine your first diamonds", Items.DIAMOND,
                 Goal.advancement("story/mine_diamond"),
@@ -205,7 +200,6 @@ public final class Journey {
                 "Good picks: Protection on armor, Sharpness on the sword, Efficiency on the pickaxe.");
         b.blueprint("enchanting_room", "enchanting_room");
 
-        // ---------------------------------------------------------------- The Nether
         b.chapter(Chapter.THE_NETHER);
         b.step("flint_and_steel", "Flint and steel", "Craft flint and steel", Items.FLINT_AND_STEEL,
                 Goal.obtain(1, Items.FLINT_AND_STEEL),
@@ -236,7 +230,6 @@ public final class Journey {
                 "Snowballs hurt blazes, and Fire Resistance potions make the fight much easier.");
         b.blueprint("nether_portal", "portal");
 
-        // ---------------------------------------------------------------- Eyes of Ender
         b.chapter(Chapter.EYES_OF_ENDER);
         b.step("ender_pearls", "Ender pearls", "Collect 12 ender pearls", Items.ENDER_PEARL,
                 Goal.obtain(12, Items.ENDER_PEARL),
@@ -269,7 +262,6 @@ public final class Journey {
                 "Right click each empty portal frame with an Eye of Ender until all 12 have eyes.",
                 "Don't break the portal frame blocks; they can't be picked up again.");
 
-        // ---------------------------------------------------------------- The End
         b.chapter(Chapter.THE_END);
         b.step("kill_dragon", "Slay the dragon", "Kill the Ender Dragon", Items.DRAGON_HEAD,
                 Goal.advancement("end/kill_dragon"),
@@ -286,7 +278,6 @@ public final class Journey {
         byId = map;
     }
 
-    /** Small helper so the step list above stays readable. */
     private static final class Builder {
         private final List<Step> list;
         private Chapter chapter;

@@ -22,14 +22,9 @@ import net.minecraftforge.common.util.BlockSnapshot;
 import net.minecraftforge.event.ForgeEventFactory;
 import org.jspecify.annotations.Nullable;
 
-/**
- * Places the block in the player's hand straight into a hologram spot, already turned the way the blueprint
- * wants it. This is what happens when you right-click a see-through block.
- */
 public final class BlueprintPlacer {
     private BlueprintPlacer() {}
 
-    /** @return true if a block was placed */
     public static boolean place(ServerPlayer player, Blueprint bp, BlockPos origin, net.minecraft.world.level.block.Rotation rotation,
                                 BlockPos pos, InteractionHand hand) {
         Blueprint.Cell cell = findCell(bp, origin, rotation, pos);
@@ -55,8 +50,7 @@ public final class BlueprintPlacer {
             tell(player, "The bed needs room for its other half.");
             return false;
         }
-        // connect fences, panes and stairs to their neighbours. A door or bed half "breaks" without its other
-        // half, which setPlacedBy adds below, so for those keep the blueprint's state.
+        // doors/beds turn into air here without their other half, setPlacedBy adds that half later
         BlockState connected = Block.updateFromNeighbourShapes(state, level, pos);
         if (!connected.isAir())
             state = connected;
@@ -69,7 +63,6 @@ public final class BlueprintPlacer {
         if (!level.setBlock(pos, state, Block.UPDATE_ALL))
             return false;
         if (ForgeEventFactory.onBlockPlace(player, snapshot, Direction.UP)) {
-            // a protection mod said no
             snapshot.restore(true, false);
             return false;
         }

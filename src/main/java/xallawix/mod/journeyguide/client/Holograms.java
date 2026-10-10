@@ -19,12 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Decides which see-through blocks to draw this tick (the placement preview, or the current layer of the
- * build plus a faint look at the next layers) and keeps the invisible anchor entity that draws them alive.
- */
 public final class Holograms {
-    /** A see-through block. {@code pulse}: gently breathes so it's easy to spot. */
     public record Ghost(BlockPos pos, BlockState state, float alpha, boolean pulse) {}
 
     private static List<Ghost> ghosts = List.of();
@@ -73,7 +68,6 @@ public final class Holograms {
         keepAnchor(mc, player, !list.isEmpty());
     }
 
-    /** Chests, beds and water have no plain block model; those are drawn as tinted boxes instead. */
     public static boolean hasModel(BlockState state) {
         return HAS_MODEL.computeIfAbsent(state, s -> {
             BlockStateModel model = Minecraft.getInstance().getModelManager().getBlockStateModelSet().get(s);
@@ -103,7 +97,6 @@ public final class Holograms {
             anchor.setPos(player.getX(), player.getY(), player.getZ());
             mc.level.addEntity(anchor);
         }
-        // stay next to the player so the anchor's chunk section is always visible
         anchor.setPos(player.getX(), player.getY(), player.getZ());
     }
 

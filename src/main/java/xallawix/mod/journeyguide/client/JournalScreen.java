@@ -26,7 +26,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-/** The journal: every chapter and step with tips, plus the build catalog. Opened with J. */
 public final class JournalScreen extends Screen {
     private static final int BUILDS_TAB = Chapter.values().length;
     private static final int TAB_H = 22;
@@ -35,7 +34,6 @@ public final class JournalScreen extends Screen {
     private static final int MID_W = 132;
     private static final int GAP = 6;
 
-    // Remembered between openings.
     private static int tab = -1;
     private static @Nullable String selectedStep;
     private static @Nullable String selectedBlueprint;
@@ -142,8 +140,6 @@ public final class JournalScreen extends Screen {
             bx += bw + 4;
         }
     }
-
-    // ------------------------------------------------------------------ rendering
 
     @Override
     public void extractRenderState(GuiGraphicsExtractor g, int mouseX, int mouseY, float a) {
@@ -373,7 +369,6 @@ public final class JournalScreen extends Screen {
         return y;
     }
 
-    /** Cuts text to fit the width, adding "..." when it's too long. */
     private String fit(String text, int width) {
         if (font.width(text) <= width)
             return text;
@@ -383,8 +378,6 @@ public final class JournalScreen extends Screen {
     private static boolean inside(double mx, double my, int x, int y, int w, int h) {
         return mx >= x && mx < x + w && my >= y && my < y + h;
     }
-
-    // ------------------------------------------------------------------ input
 
     @Override
     public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
@@ -464,7 +457,6 @@ public final class JournalScreen extends Screen {
 
     @Override
     public void tick() {
-        // keep the buttons in sync with what the server says (skip / undo, next tip...)
         if (ClientState.received() && stateChanged())
             rebuildWidgets();
     }

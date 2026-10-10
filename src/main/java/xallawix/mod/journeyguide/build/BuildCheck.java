@@ -13,13 +13,11 @@ import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 
 import java.util.List;
 
-/** Shared rules (client and server) for whether a block in the world matches the blueprint. */
 public final class BuildCheck {
     private BuildCheck() {}
 
     public enum Status { DONE, MISSING, WRONG, OBSTRUCTED }
 
-    /** Air, grass, flowers, snow layers and other things you can build right through. */
     public static boolean isClear(BlockState state) {
         return state.isAir() || state.canBeReplaced() || state.is(Blocks.NETHER_PORTAL) || state.is(Blocks.FIRE);
     }
@@ -32,7 +30,6 @@ public final class BuildCheck {
         return isClear(world) ? Status.MISSING : Status.WRONG;
     }
 
-    /** Any bed color is fine. */
     public static boolean sameKind(Block world, Block expected) {
         return world == expected || (world instanceof BedBlock && expected instanceof BedBlock);
     }
@@ -47,10 +44,6 @@ public final class BuildCheck {
         return true;
     }
 
-    /**
-     * The block you actually have to place for this cell. The top half of a door and the head of a bed
-     * appear by themselves, so they don't cost anything (returns air).
-     */
     public static Block materialOf(BlockState state) {
         if (state.hasProperty(DoorBlock.HALF) && state.getBlock() instanceof DoorBlock
                 && state.getValue(DoorBlock.HALF) == DoubleBlockHalf.UPPER)
@@ -60,7 +53,6 @@ public final class BuildCheck {
         return state.getBlock();
     }
 
-    /** The item that places this block, for inventory counts and icons. */
     public static Item itemFor(Block block) {
         if (block == Blocks.WATER)
             return Items.WATER_BUCKET;
@@ -72,7 +64,6 @@ public final class BuildCheck {
         return item == Items.AIR ? Items.BARRIER : item;
     }
 
-    /** Extra advice for blocks you can't simply place from your inventory. */
     public static String placementNote(Block block) {
         if (block == Blocks.FARMLAND)
             return "Till dirt with a hoe";
@@ -85,7 +76,6 @@ public final class BuildCheck {
         return "";
     }
 
-    /** Blocks the player isn't expected to carry (dirt you till, water from a bucket you keep). */
     public static boolean countsInventory(Block block) {
         return block != Blocks.FARMLAND && block != Blocks.WATER;
     }

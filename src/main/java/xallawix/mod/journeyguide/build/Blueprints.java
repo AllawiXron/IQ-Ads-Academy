@@ -21,7 +21,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-/** All builds that come with the mod (cozy rustic style). */
 public final class Blueprints {
     private static Map<String, Blueprint> all;
 
@@ -48,8 +47,6 @@ public final class Blueprints {
         all = Collections.unmodifiableMap(map);
     }
 
-    // ------------------------------------------------------------------ helpers
-
     private static BlockState door(Block door, DoubleBlockHalf half) {
         return door.defaultBlockState().setValue(DoorBlock.FACING, Direction.NORTH).setValue(DoorBlock.HALF, half);
     }
@@ -61,8 +58,6 @@ public final class Blueprints {
     private static BlockState stairs(Block stairs, Direction facing) {
         return stairs.defaultBlockState().setValue(StairBlock.FACING, facing);
     }
-
-    // ------------------------------------------------------------------ builds
 
     private static Blueprint starterHut() {
         return Blueprint.builder("starter_hut", "First Night Shelter", Items.OAK_DOOR)
@@ -114,7 +109,7 @@ public final class Blueprints {
                 .key('t', Blocks.TORCH)
                 .key('e', stairs(Blocks.OAK_STAIRS, Direction.EAST))
                 .key('w', stairs(Blocks.OAK_STAIRS, Direction.WEST))
-                .layer( // floor, level with the ground
+                .layer(
                         "CCCCCCC",
                         "CCCCCCC",
                         "CCCCCCC",
@@ -146,7 +141,7 @@ public final class Blueprints {
                         "P.....P",
                         "P.....P",
                         "LPPPPPL")
-                .layer( // roof
+                .layer(
                         "ePPPPPw",
                         "e.....w",
                         "e.....w",
@@ -192,7 +187,7 @@ public final class Blueprints {
                 .key('#', Blocks.OAK_FENCE)
                 .key('g', Blocks.OAK_FENCE_GATE.defaultBlockState().setValue(FenceGateBlock.FACING, Direction.NORTH))
                 .key('t', Blocks.TORCH)
-                .layer( // dug into the ground
+                .layer(
                         "         ",
                         " fffffff ",
                         " fffffff ",

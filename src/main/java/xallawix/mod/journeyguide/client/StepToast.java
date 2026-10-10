@@ -13,7 +13,6 @@ import net.minecraft.world.item.ItemStack;
 
 import java.util.List;
 
-/** The pop-up in the top right when a step, chapter or build is finished. */
 public final class StepToast implements Toast {
     private static final Identifier BACKGROUND = Identifier.withDefaultNamespace("toast/advancement");
     private static final long DISPLAY_MS = 5000;

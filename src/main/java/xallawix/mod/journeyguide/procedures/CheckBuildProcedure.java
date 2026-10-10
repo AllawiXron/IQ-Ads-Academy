@@ -17,16 +17,18 @@ import java.util.List;
 
 public class CheckBuildProcedure {
 	public static void execute(Entity entity) {
-		if (!(entity instanceof ServerPlayer player))
+		if (entity == null)
 			return;
-		PlayerProgress progress = JourneyGuideModVariables.get(player);
+		if (!(entity instanceof ServerPlayer _player))
+			return;
+		PlayerProgress progress = JourneyGuideModVariables.get(_player);
 		PlayerProgress.ActiveBuild build = progress.activeBuild;
 		Blueprint blueprint = build == null ? null : Blueprints.get(build.blueprintId());
 		if (blueprint == null) {
 			progress.activeBuild = null;
 			return;
 		}
-		ServerLevel level = player.level();
+		ServerLevel level = _player.level();
 		if (!level.dimension().identifier().equals(build.dimension()))
 			return;
 
@@ -38,10 +40,10 @@ public class CheckBuildProcedure {
 		if (BuildCheck.isComplete(level, cells)) {
 			progress.completedBuilds.add(blueprint.id);
 			progress.activeBuild = null;
-			JourneyGuideModVariables.save(player, progress);
-			player.sendSystemMessage(Component.literal("[Journey Guide] ").withStyle(ChatFormatting.GOLD)
+			JourneyGuideModVariables.save(_player, progress);
+			_player.sendSystemMessage(Component.literal("[Journey Guide] ").withStyle(ChatFormatting.GOLD)
 					.append(Component.literal("Build complete: " + blueprint.name + "! Great work.").withStyle(ChatFormatting.GREEN)));
-			level.playSound(null, player.blockPosition(), SoundEvents.PLAYER_LEVELUP, SoundSource.PLAYERS, 0.8F, 1.0F);
+			level.playSound(null, _player.blockPosition(), SoundEvents.PLAYER_LEVELUP, SoundSource.PLAYERS, 0.8F, 1.0F);
 		}
 	}
 }

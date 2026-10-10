@@ -13,9 +13,11 @@ import xallawix.mod.journeyguide.network.JourneyGuideModVariables;
 
 public class JourneyActionProcedure {
 	public static void execute(Entity entity, JourneyActionMessage message) {
-		if (!(entity instanceof ServerPlayer player))
+		if (entity == null)
 			return;
-		PlayerProgress progress = JourneyGuideModVariables.get(player);
+		if (!(entity instanceof ServerPlayer _player))
+			return;
+		PlayerProgress progress = JourneyGuideModVariables.get(_player);
 		switch (message.action()) {
 			case SKIP_STEP -> {
 				if (Journey.get(message.text()) != null && progress.completed.add(message.text()))
@@ -28,23 +30,23 @@ public class JourneyActionProcedure {
 			case MORE_TIPS -> progress.extraTips++;
 			case PLACE_BUILD -> {
 				Blueprint blueprint = Blueprints.get(message.text());
-				if (blueprint == null || message.pos().distSqr(player.blockPosition()) > 96 * 96)
+				if (blueprint == null || message.pos().distSqr(_player.blockPosition()) > 96 * 96)
 					return;
-				progress.activeBuild = new PlayerProgress.ActiveBuild(blueprint.id, message.pos(), message.rotation(), player.level().dimension().identifier());
+				progress.activeBuild = new PlayerProgress.ActiveBuild(blueprint.id, message.pos(), message.rotation(), _player.level().dimension().identifier());
 			}
 			case CANCEL_BUILD -> progress.activeBuild = null;
 			case PLACE_BLOCK -> {
 				PlayerProgress.ActiveBuild build = progress.activeBuild;
 				Blueprint blueprint = build == null ? null : Blueprints.get(build.blueprintId());
-				if (blueprint == null || !player.level().dimension().identifier().equals(build.dimension()))
+				if (blueprint == null || !_player.level().dimension().identifier().equals(build.dimension()))
 					return;
 				InteractionHand hand = message.text().equals("off") ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND;
-				if (BlueprintPlacer.place(player, blueprint, build.origin(), build.rotation(), message.pos(), hand))
-					CheckBuildProcedure.execute(player);
+				if (BlueprintPlacer.place(_player, blueprint, build.origin(), build.rotation(), message.pos(), hand))
+					CheckBuildProcedure.execute(_player);
 				return;
 			}
 		}
-		JourneyGuideModVariables.save(player, progress);
-		UpdateJourneyProcedure.execute(player);
+		JourneyGuideModVariables.save(_player, progress);
+		UpdateJourneyProcedure.execute(_player);
 	}
 }

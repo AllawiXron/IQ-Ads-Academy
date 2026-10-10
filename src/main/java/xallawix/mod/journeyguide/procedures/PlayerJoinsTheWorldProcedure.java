@@ -15,9 +15,11 @@ public class PlayerJoinsTheWorldProcedure {
 	}
 
 	public static void execute(Entity entity) {
-		if (!(entity instanceof ServerPlayer player))
+		if (entity == null)
 			return;
-		JourneyGuideModVariables.get(player).lastSyncHash = 0;
-		UpdateJourneyProcedure.execute(player);
+		if (!(entity instanceof ServerPlayer _player))
+			return;
+		JourneyGuideModVariables.get(_player).lastSyncHash = 0;
+		UpdateJourneyProcedure.execute(_player);
 	}
 }

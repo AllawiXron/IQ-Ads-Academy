@@ -1,3 +1,6 @@
+/*
+ *    MCreator note: This file will be REGENERATED on each build.
+ */
 package xallawix.mod.journeyguide;
 
 import com.mojang.logging.LogUtils;

@@ -16,9 +16,11 @@ public class PlayerChangesDimensionProcedure {
 	}
 
 	public static void execute(Entity entity) {
-		if (!(entity instanceof ServerPlayer player))
+		if (entity == null)
 			return;
-		PlayerProgress progress = JourneyGuideModVariables.get(player);
+		if (!(entity instanceof ServerPlayer _player))
+			return;
+		PlayerProgress progress = JourneyGuideModVariables.get(_player);
 		progress.pointerSearched = false;
 		progress.lastSyncHash = 0;
 	}

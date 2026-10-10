@@ -21,16 +21,18 @@ public class UpdateJourneyProcedure {
 	private static final int RESYNC_TICKS = 100;
 
 	public static void execute(Entity entity) {
-		if (!(entity instanceof ServerPlayer player))
+		if (entity == null)
 			return;
-		PlayerProgress progress = JourneyGuideModVariables.get(player);
+		if (!(entity instanceof ServerPlayer _player))
+			return;
+		PlayerProgress progress = JourneyGuideModVariables.get(_player);
 		Map<String, Integer> stepProgress = new HashMap<>();
 		boolean changed = false;
 		for (Step step : Journey.steps()) {
 			if (progress.completed.contains(step.id()))
 				continue;
 			int target = step.goal().target();
-			int value = Math.min(step.goal().progress(player, progress), target);
+			int value = Math.min(step.goal().progress(_player, progress), target);
 			if (value >= target) {
 				progress.completed.add(step.id());
 				changed = true;
@@ -46,25 +48,25 @@ public class UpdateJourneyProcedure {
 			changed = true;
 		}
 		if (current != null)
-			FindStructurePointerProcedure.execute(player, current);
+			FindStructurePointerProcedure.execute(_player, current);
 
 		if (!progress.welcomed) {
 			progress.welcomed = true;
 			changed = true;
-			player.sendSystemMessage(Component.literal("[Journey Guide] ").withStyle(ChatFormatting.GOLD)
+			_player.sendSystemMessage(Component.literal("[Journey Guide] ").withStyle(ChatFormatting.GOLD)
 					.append(Component.literal("Your guide to beating Minecraft is on the top left. Press ").withStyle(ChatFormatting.YELLOW))
 					.append(Component.literal("J").withStyle(ChatFormatting.AQUA, ChatFormatting.BOLD))
 					.append(Component.literal(" to open your journal and see every step.").withStyle(ChatFormatting.YELLOW)));
 		}
 		if (changed)
-			JourneyGuideModVariables.save(player, progress);
+			JourneyGuideModVariables.save(_player, progress);
 
 		JourneySyncMessage message = toMessage(progress, stepProgress);
 		int hash = message.contentHash();
 		if (hash != progress.lastSyncHash || progress.ticksSinceSync >= RESYNC_TICKS) {
 			progress.lastSyncHash = hash;
 			progress.ticksSinceSync = 0;
-			JourneyGuideMod.sendToPlayer(player, message);
+			JourneyGuideMod.sendToPlayer(_player, message);
 		}
 	}
 

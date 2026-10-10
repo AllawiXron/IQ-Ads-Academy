@@ -1,3 +1,6 @@
+/*
+ *    MCreator note: This file will be REGENERATED on each build.
+ */
 package xallawix.mod.journeyguide.init;
 
 import com.mojang.blaze3d.platform.InputConstants;

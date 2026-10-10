@@ -19,15 +19,17 @@ public class JourneyPlayerTickProcedure {
 	}
 
 	public static void execute(Entity entity) {
-		if (!(entity instanceof ServerPlayer player))
+		if (entity == null)
 			return;
-		if (player.tickCount % CHECK_INTERVAL != 0)
+		if (!(entity instanceof ServerPlayer _player))
 			return;
-		PlayerProgress progress = JourneyGuideModVariables.get(player);
+		if (_player.tickCount % CHECK_INTERVAL != 0)
+			return;
+		PlayerProgress progress = JourneyGuideModVariables.get(_player);
 		progress.ticksOnStep += CHECK_INTERVAL;
 		progress.ticksSinceSync += CHECK_INTERVAL;
-		if (progress.activeBuild != null && player.tickCount % BUILD_CHECK_INTERVAL == 0)
-			CheckBuildProcedure.execute(player);
-		UpdateJourneyProcedure.execute(player);
+		if (progress.activeBuild != null && _player.tickCount % BUILD_CHECK_INTERVAL == 0)
+			CheckBuildProcedure.execute(_player);
+		UpdateJourneyProcedure.execute(_player);
 	}
 }

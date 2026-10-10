@@ -15,9 +15,11 @@ public class PlayerLeavesTheWorldProcedure {
 	}
 
 	public static void execute(Entity entity) {
-		if (!(entity instanceof ServerPlayer player))
+		if (entity == null)
 			return;
-		JourneyGuideModVariables.save(player, JourneyGuideModVariables.get(player));
-		JourneyGuideModVariables.forget(player);
+		if (!(entity instanceof ServerPlayer _player))
+			return;
+		JourneyGuideModVariables.save(_player, JourneyGuideModVariables.get(_player));
+		JourneyGuideModVariables.forget(_player);
 	}
 }

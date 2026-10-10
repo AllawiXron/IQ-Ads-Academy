@@ -15,8 +15,10 @@ public class PlayerRespawnsProcedure {
 	}
 
 	public static void execute(Entity entity) {
-		if (!(entity instanceof ServerPlayer player))
+		if (entity == null)
 			return;
-		JourneyGuideModVariables.get(player).lastSyncHash = 0;
+		if (!(entity instanceof ServerPlayer _player))
+			return;
+		JourneyGuideModVariables.get(_player).lastSyncHash = 0;
 	}
 }

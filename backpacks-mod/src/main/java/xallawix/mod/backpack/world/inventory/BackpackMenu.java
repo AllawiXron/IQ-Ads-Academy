@@ -21,6 +21,7 @@ import java.util.Comparator;
 import java.util.List;
 
 public class BackpackMenu extends AbstractContainerMenu {
+	public static final int SLOTS_TOP = 24;
 	public final BackpackTier tier;
 	public final int backpackSlot;
 	public final ItemStack backpack;
@@ -51,12 +52,12 @@ public class BackpackMenu extends AbstractContainerMenu {
 		addDataSlot(autoPickup);
 
 		imageWidth = Math.max(176, tier.columns * 18 + 14);
-		inventoryTop = 18 + tier.rows * 18 + 13;
+		inventoryTop = SLOTS_TOP + tier.rows * 18 + 16;
 		imageHeight = inventoryTop + 83;
 		int left = (imageWidth - tier.columns * 18) / 2 + 1;
 		for (int row = 0; row < tier.rows; row++) {
 			for (int col = 0; col < tier.columns; col++)
-				addSlot(new BackpackSlot(container, col + row * tier.columns, left + col * 18, 18 + row * 18));
+				addSlot(new BackpackSlot(container, col + row * tier.columns, left + col * 18, SLOTS_TOP + row * 18));
 		}
 		int invLeft = (imageWidth - 162) / 2 + 1;
 		for (int row = 0; row < 3; row++) {

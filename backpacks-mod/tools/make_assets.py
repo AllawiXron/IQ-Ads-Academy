@@ -13,6 +13,8 @@ import sys
 
 from PIL import Image, ImageDraw
 
+import icons
+
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'src', 'main', 'resources', 'assets', 'backpack')
 TEX = os.path.join(ROOT, 'textures')
 OLD = sys.argv[1] if len(sys.argv) > 1 else '.'
@@ -136,79 +138,82 @@ def texture_3d(name, base, dark, light, strap, metal, tinted):
 
 
 def icon(name, src):
-    if name == 'ender':
-        leather = Image.open(os.path.join(OLD, TIERS['leather'][0])).convert('RGBA')
-        out = Image.new('RGBA', leather.size)
-        lp, op = leather.load(), out.load()
-        for y in range(leather.height):
-            for x in range(leather.width):
-                r, g, b, a = lp[x, y]
-                if a == 0:
-                    continue
-                l = gray((r, g, b)) / 255
-                op[x, y] = (int(20 + 50 * l), int(50 + 110 * l), int(55 + 105 * l), a)
-        cx, cy = 7, 9
-        for dx, dy in ((0, 0), (1, 0), (0, 1), (1, 1)):
-            op[cx + dx, cy + dy] = (90, 230, 160, 255)
-        op[cx, cy] = (200, 255, 220, 255)
-        return out
-    img = Image.open(os.path.join(OLD, src)).convert('RGBA')
-    if name != 'leather':
-        return img
-    # leather gets dyed in game: store it in gray and let the tint bring the brown back
-    d = (LEATHER_DEFAULT >> 16 & 255, LEATHER_DEFAULT >> 8 & 255, LEATHER_DEFAULT & 255)
-    out = Image.new('RGBA', img.size)
-    ip, op = img.load(), out.load()
-    for y in range(img.height):
-        for x in range(img.width):
-            r, g, b, a = ip[x, y]
-            v = min(255, int(gray((r, g, b)) * 255 / gray(d) * 0.95))
-            op[x, y] = (v, v, v, a)
-    return out
+    if name == 'leather':
+        return icons.leather_layers()[0]
+    return icons.draw(name)[0]
+
+
+HEADER = 20
+SLOTS_TOP = 24
+
+
+def bevel_panel(d, x0, y0, x1, y1, bg=(198, 198, 198)):
+    """Vanilla style rounded panel: black outline, white top-left bevel, gray bottom-right bevel."""
+    white, shade, edge = (255, 255, 255, 255), (85, 85, 85, 255), (0, 0, 0, 255)
+    d.rectangle((x0 + 2, y0 + 1, x1 - 2, y1 - 1), fill=bg + (255,))
+    d.rectangle((x0 + 1, y0 + 2, x1 - 1, y1 - 2), fill=bg + (255,))
+    d.line((x0 + 2, y0, x1 - 3, y0), fill=edge)
+    d.line((x0 + 3, y1, x1 - 2, y1), fill=edge)
+    d.line((x0, y0 + 2, x0, y1 - 3), fill=edge)
+    d.line((x1, y0 + 3, x1, y1 - 2), fill=edge)
+    d.point([(x0 + 1, y0 + 1), (x1 - 2, y0 + 1), (x1 - 1, y0 + 2), (x0 + 1, y1 - 2), (x0 + 2, y1 - 1), (x1 - 1, y1 - 1)], fill=edge)
+    d.line((x0 + 2, y0 + 1, x1 - 3, y0 + 1), fill=white)
+    d.line((x0 + 1, y0 + 2, x0 + 1, y1 - 3), fill=white)
+    d.point([(x0 + 2, y0 + 2)], fill=white)
+    d.line((x0 + 3, y1 - 1, x1 - 2, y1 - 1), fill=shade)
+    d.line((x1 - 1, y0 + 3, x1 - 1, y1 - 2), fill=shade)
+    d.point([(x1 - 2, y1 - 2)], fill=shade)
+
+
+def slot(d, x, y):
+    d.rectangle((x, y, x + 17, y + 17), fill=(139, 139, 139, 255))
+    d.line((x, y, x + 16, y), fill=(55, 55, 55, 255))
+    d.line((x, y, x, y + 16), fill=(55, 55, 55, 255))
+    d.line((x + 1, y + 17, x + 17, y + 17), fill=(255, 255, 255, 255))
+    d.line((x + 17, y + 1, x + 17, y + 17), fill=(255, 255, 255, 255))
 
 
 def gui(name, cols, rows):
     w = max(176, cols * 18 + 14)
-    top = 18 + rows * 18 + 13
+    top = SLOTS_TOP + rows * 18 + 16
     h = top + 83
-    img = Image.new('RGBA', (w, h), (0, 0, 0, 0))
+    img = Image.new('RGBA', (w + 28, h), (0, 0, 0, 0))
     d = ImageDraw.Draw(img)
-    bg, white, shade, edge = (198, 198, 198, 255), (255, 255, 255, 255), (85, 85, 85, 255), (0, 0, 0, 255)
-    # rounded vanilla panel
-    d.rectangle((2, 1, w - 3, h - 2), fill=bg)
-    d.rectangle((1, 2, w - 2, h - 3), fill=bg)
-    d.line((2, 0, w - 4, 0), fill=edge)
-    d.line((2, h - 1, w - 3, h - 1), fill=edge)
-    d.line((0, 2, 0, h - 4), fill=edge)
-    d.line((w - 1, 3, w - 1, h - 3), fill=edge)
-    d.point([(1, 1), (w - 3, 1), (w - 2, 2), (1, h - 3), (2, h - 2), (w - 2, h - 2)], fill=edge)
-    d.line((2, 1, w - 4, 1), fill=white)
-    d.line((1, 2, 1, h - 4), fill=white)
-    d.line((2, 2, 3, 2), fill=white)
-    d.line((3, h - 2, w - 3, h - 2), fill=shade)
-    d.line((w - 2, 3, w - 2, h - 3), fill=shade)
-    d.point([(w - 4, h - 4), (w - 3, h - 3)], fill=shade)
-
-    def slot(x, y):
-        d.rectangle((x, y, x + 17, y + 17), fill=(139, 139, 139, 255))
-        d.line((x, y, x + 16, y), fill=(55, 55, 55, 255))
-        d.line((x, y, x, y + 16), fill=(55, 55, 55, 255))
-        d.line((x + 1, y + 17, x + 17, y + 17), fill=white)
-        d.line((x + 17, y + 1, x + 17, y + 17), fill=white)
-
+    o, dark, mid, light, high = icons.TIERS[name][:5]
+    if name == 'leather':  # the icon is gray for the dye tint, the gui uses the default leather brown
+        o, dark, mid, light, high = (58, 34, 18), (108, 66, 38), (160, 101, 64), (190, 132, 90), (214, 166, 122)
+    # side tab for the buttons, tucked behind the main panel
+    bevel_panel(d, w - 6, 22, w + 26, 22 + 4 * 22 + 6)
+    for i in range(4):
+        x, y = w + 2, 26 + i * 22
+        d.rectangle((x - 1, y - 1, x + 20, y + 20), fill=(139, 139, 139, 255))
+        d.line((x - 1, y - 1, x + 19, y - 1), fill=(55, 55, 55, 255))
+        d.line((x - 1, y - 1, x - 1, y + 19), fill=(55, 55, 55, 255))
+        d.line((x, y + 20, x + 20, y + 20), fill=(255, 255, 255, 255))
+        d.line((x + 20, y, x + 20, y + 20), fill=(255, 255, 255, 255))
+    bevel_panel(d, 0, 0, w - 1, h - 1)
+    # coloured header with the tier's colours
+    for y in range(3, HEADER):
+        t = (y - 3) / (HEADER - 4)
+        c = tuple(int(a + (b - a) * t) for a, b in zip(mid if name != 'netherite' else light, dark))
+        d.line((3, y, w - 4, y), fill=c + (255,))
+    d.line((3, 2, w - 4, 2), fill=high + (255,))
+    d.line((3, HEADER, w - 4, HEADER), fill=o + (255,))
+    d.line((3, HEADER + 1, w - 4, HEADER + 1), fill=(150, 150, 150, 255))
     left = (w - cols * 18) // 2
     for r in range(rows):
         for c in range(cols):
-            slot(left + c * 18, 17 + r * 18)
+            slot(d, left + c * 18, SLOTS_TOP - 1 + r * 18)
+    # groove between the backpack and your inventory
+    gy = SLOTS_TOP + rows * 18 + 1
+    d.line((6, gy, w - 7, gy), fill=(139, 139, 139, 255))
+    d.line((6, gy + 1, w - 7, gy + 1), fill=(255, 255, 255, 255))
     inv_left = (w - 162) // 2
     for r in range(3):
         for c in range(9):
-            slot(inv_left + c * 18, top - 1 + r * 18)
+            slot(d, inv_left + c * 18, top - 1 + r * 18)
     for c in range(9):
-        slot(inv_left + c * 18, top + 57)
-    # a thin strip in the tier colour under the title
-    accent = TIERS[name][1]
-    d.line((8, 14, w - 9, 14), fill=accent + (255,))
+        slot(d, inv_left + c * 18, top + 57)
     return img
 
 
@@ -222,7 +227,11 @@ def main():
         icon(name, src).save(os.path.join(TEX, 'item', name + '_backpack.png'))
         texture_3d(name, base, dark, light, strap, metal, tinted).save(os.path.join(TEX, 'item', name + '_backpack_3d.png'))
         json.dump(model_3d(name, tinted), open(os.path.join(ROOT, 'models', 'item', name + '_backpack_3d.json'), 'w'), indent=1)
-        json.dump({'parent': 'minecraft:item/generated', 'textures': {'layer0': 'backpack:item/' + name + '_backpack'}},
+        layers = {'layer0': 'backpack:item/' + name + '_backpack'}
+        if tinted:
+            icons.leather_layers()[1].save(os.path.join(TEX, 'item', name + '_backpack_overlay.png'))
+            layers['layer1'] = 'backpack:item/' + name + '_backpack_overlay'
+        json.dump({'parent': 'minecraft:item/generated', 'textures': layers},
                   open(os.path.join(ROOT, 'models', 'item', name + '_backpack.json'), 'w'), indent=1)
         tints = [{'type': 'minecraft:dye', 'default': LEATHER_DEFAULT - 0x1000000}] if tinted else None
 

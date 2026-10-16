@@ -1,0 +1,12 @@
+{
+  "item.backpack.leather_backpack": "Leather Backpack",
+  "item.backpack.iron_backpack": "Iron Backpack",
+  "item.backpack.golden_backpack": "Golden Backpack",
+  "item.backpack.diamond_backpack": "Diamond Backpack",
+  "item.backpack.emerald_backpack": "Emerald Backpack",
+  "item.backpack.netherite_backpack": "Netherite Backpack",
+  "item.backpack.ender_backpack": "Ender Backpack",
+  "itemGroup.backpack.backpacks": "Backpacks",
+  "key.backpack.open_backpack": "Open backpack",
+  "key.category.backpack.main": "Backpacks"
+}

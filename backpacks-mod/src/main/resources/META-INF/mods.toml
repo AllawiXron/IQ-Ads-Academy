@@ -1,0 +1,26 @@
+modLoader="javafml"
+loaderVersion="[66,)"
+license="MIT License"
+
+[[mods]]
+modId="backpack"
+version="2.0"
+displayName="Backpacks"
+credits="XAllawiX"
+authors="XAllawiX"
+displayURL="https://www.planetminecraft.com/member/xallawix/"
+description="Backpacks that actually feel good to use! 6 tiers from leather to netherite with way more space, an ender backpack, sorting, auto pickup, and you can wear them on your back and open them with B."
+
+[[dependencies.backpack]]
+    modId="forge"
+    mandatory=true
+    versionRange="[66,)"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.backpack]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[26.3,26.4)"
+    ordering="NONE"
+    side="BOTH"
